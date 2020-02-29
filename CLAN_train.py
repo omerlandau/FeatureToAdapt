@@ -337,15 +337,16 @@ def main():
 
         loss_norm_src = get_L2norm_loss_self_driven(feature_ext_src)
 
+        loss_norm_target = get_L2norm_loss_self_driven(feature_ext_target)
+
         loss_feature = loss_norm_src + loss_norm_target
 
-        loss_feature.backward()
-		
         #Segmentation Loss
         loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
-        loss_seg.backward()
 
-        loss_norm_target = get_L2norm_loss_self_driven(feature_ext_target)
+        loss_total = loss_feature + loss_seg
+
+        loss_total.backward()
 
         weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
         
