@@ -229,7 +229,7 @@ def main():
 
     model.train()
     model.cuda(args.gpu)
-    summary(model, [(3, 720, 1280), (3, 514, 1024)])
+    summary(model, (3, 720, 1280))
 
     cudnn.benchmark = True
 
