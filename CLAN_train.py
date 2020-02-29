@@ -212,8 +212,6 @@ def main():
     
     # Create Network
     model = Res_Deeplab(num_classes=args.num_classes)
-
-    summary(model, (3, 720, 1280) ,batch_size=1)
     if args.restore_from[:4] == 'http':
         saved_state_dict = model_zoo.load_url(args.restore_from)
     else:
@@ -231,6 +229,7 @@ def main():
         
     model.train()
     model.cuda(args.gpu)
+    summary(model, [(3, 720, 1280), (3, 514, 1024)], batch_size=1)
 
     cudnn.benchmark = True
 
