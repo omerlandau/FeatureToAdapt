@@ -330,7 +330,7 @@ def main():
 		
         #Segmentation Loss
         loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
-        loss_seg.backward()
+        loss_seg.backward(retain_graph=True)
 
         # Train with Target
         _, batch = next(targetloader_iter)
@@ -357,7 +357,7 @@ def main():
                           Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(args.gpu))
 
         loss_adv = loss_adv * Lambda_adv * damping
-        loss_adv.backward()
+        loss_adv.backward(retain_graph=True)
         
         #Weight Discrepancy Loss
         W5 = None
@@ -374,7 +374,7 @@ def main():
         
         loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
         loss_weight = loss_weight * Lambda_weight * damping * 2
-        loss_weight.backward()
+        loss_weight.backward(retain_graph=True)
 
         # feature genralization loss
 
