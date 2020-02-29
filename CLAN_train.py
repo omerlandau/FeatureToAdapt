@@ -10,6 +10,8 @@ import torch.nn.functional as F
 import os
 import os.path as osp
 
+from torchsummary import summary
+
 from model.CLAN_G import Res_Deeplab
 from model.CLAN_D import FCDiscriminator
 
@@ -210,6 +212,7 @@ def main():
     
     # Create Network
     model = Res_Deeplab(num_classes=args.num_classes)
+    print(model)
     if args.restore_from[:4] == 'http' :
         saved_state_dict = model_zoo.load_url(args.restore_from)
     else:
