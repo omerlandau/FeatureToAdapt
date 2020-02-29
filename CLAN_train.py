@@ -363,24 +363,21 @@ def main():
         loss_adv.backward()
         
         #Weight Discrepancy Loss
-        W5 = None
-        W6 = None
-        if args.model == 'ResNet':
+        #W5 = None
+        #W6 = None
+        #if args.model == 'ResNet':
 
-            for (w5, w6) in zip(model.layer5.parameters(), model.layer6.parameters()):
-                if W5 is None and W6 is None:
-                    W5 = w5.view(-1)
-                    W6 = w6.view(-1)
-                else:
-                    W5 = torch.cat((W5, w5.view(-1)), 0)
-                    W6 = torch.cat((W6, w6.view(-1)), 0)
+        #    for (w5, w6) in zip(model.layer5.parameters(), model.layer6.parameters()):
+        #        if W5 is None and W6 is None:
+        #            W5 = w5.view(-1)
+        #            W6 = w6.view(-1)
+        #        else:
+        #            W5 = torch.cat((W5, w5.view(-1)), 0)
+        #            W6 = torch.cat((W6, w6.view(-1)), 0)
         
-        loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
-        loss_weight = loss_weight * Lambda_weight * damping * 2
-        loss_weight.backward()
-
-        # feature genralization loss
-
+        #loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
+        #loss_weight = loss_weight * Lambda_weight * damping * 2
+        #loss_weight.backward()
 
         
         #======================================================================================
