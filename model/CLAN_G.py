@@ -187,16 +187,16 @@ class ResNet(nn.Module):
         x = self.layer3(x)
         print(x.shape)
         print(x)
-        x = self.layer4(x)
+        x1 = self.layer4(x)
         print(x.shape)
         print(x)
-        x1 = self.layer5(x)
+        x2 = self.layer5(x1)
         print(x1.shape)
         print(x)
-        x2 = self.layer6(x)
+        x3 = self.layer6(x1)
         print(x2.shape)
         print(x)
-        return x1, x2
+        return x2, x3, x1
 
     def get_1x_lr_params_NOscale(self):
         """

@@ -153,6 +153,12 @@ def get_arguments():
 
 args = get_arguments()
 
+def get_L2norm_loss_self_driven(x):
+    radius = x.norm(p=2, dim=1).detach()
+    assert radius.requires_grad == False
+    radius = radius + 0.3
+    l = ((x.norm(p=2, dim=1) - radius) ** 2).mean()
+    return args.weight_L2norm * l
 
 def loss_calc(pred, label, gpu):
     """
@@ -213,7 +219,6 @@ def main():
     # Create Network
     model = Res_Deeplab(num_classes=args.num_classes)
     print(model)
-    repr(model)
     if args.restore_from[:4] == 'http':
         saved_state_dict = model_zoo.load_url(args.restore_from)
     else:
@@ -315,22 +320,31 @@ def main():
         _, batch = next(trainloader_iter)
         images_s, labels_s, _, _, _ = batch
         images_s = Variable(images_s).cuda(args.gpu)
-        pred_source1, pred_source2 = model(images_s)
+        pred_source1, pred_source2, feature_ext_src = model(images_s)
         pred_source1 = interp_source(pred_source1)
         pred_source2 = interp_source(pred_source2)
 		
         #Segmentation Loss
         loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
         loss_seg.backward()
+        loss_norm_src = get_L2norm_loss_self_driven(feature_ext_src)
 
         # Train with Target
         _, batch = next(targetloader_iter)
         images_t, _, _, _ = batch
         images_t = Variable(images_t).cuda(args.gpu)
         
-        pred_target1, pred_target2 = model(images_t)
+        pred_target1, pred_target2, feature_ext_target = model(images_t)
         pred_target1 = interp_target(pred_target1)
         pred_target2 = interp_target(pred_target2)
+
+        loss_norm_target = get_L2norm_loss_self_driven(feature_ext_target)
+
+        # feature genralization loss
+
+        loss_feature = loss_norm_src + loss_norm_target
+
+        loss_feature.backward()
 
         weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
         
