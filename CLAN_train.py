@@ -25,7 +25,7 @@ IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32
 MODEL = 'ResNet'
 BATCH_SIZE = 1
 ITER_SIZE = 1
-NUM_WORKERS = 0
+NUM_WORKERS = 4
 
 IGNORE_LABEL = 255
 
@@ -71,7 +71,7 @@ elif SOURCE == 'SYNTHIA':
     Epsilon = 0.4
     
 INPUT_SIZE_TARGET = '1024,512'
-DATA_DIRECTORY_TARGET = './data/Cityscapes'
+DATA_DIRECTORY_TARGET = '../data/Cityscapes'
 DATA_LIST_PATH_TARGET = './dataset/cityscapes_list/train.txt'
 
 
