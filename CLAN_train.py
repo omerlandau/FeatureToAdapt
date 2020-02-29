@@ -148,6 +148,8 @@ def get_arguments():
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose adaptation set.")
+    parser.add_argument("--weight_L2norm", type=str, default=0.01,
+                        help="choose norm loss weight.")
     return parser.parse_args()
 
 
