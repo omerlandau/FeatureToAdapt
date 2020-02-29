@@ -164,7 +164,7 @@ class ResNet(nn.Module):
         return block(inplanes, dilation_series, padding_series, num_classes)
 
     def forward(self, x):
-        print(x)
+        print(x.shape())
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
