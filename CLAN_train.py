@@ -337,9 +337,9 @@ def main():
 
         loss_norm_target = get_L2norm_loss_self_driven(feature_ext_target)
 
-        loss_norm_src.backward()
+        loss_feature = loss_norm_src + loss_norm_target
 
-        loss_norm_target.backward()
+        loss_feature.backward(retain_graph = True)
 
         #Segmentation Loss
         loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
