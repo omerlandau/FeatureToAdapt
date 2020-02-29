@@ -357,7 +357,7 @@ def main():
                           Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(args.gpu))
 
         loss_adv = loss_adv * Lambda_adv * damping
-        loss_adv.backward(retain_graph=True)
+        loss_adv.backward()
         
         #Weight Discrepancy Loss
         W5 = None
@@ -374,7 +374,7 @@ def main():
         
         loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
         loss_weight = loss_weight * Lambda_weight * damping * 2
-        loss_weight.backward(retain_graph=True)
+        loss_weight.backward()
 
         # feature genralization loss
 
