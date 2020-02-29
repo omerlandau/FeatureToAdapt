@@ -337,7 +337,7 @@ def main():
 
         loss_norm_target = get_L2norm_loss_self_driven(feature_ext_target)
 
-        loss_norm_src.backward()
+        loss_norm_src.backward(retain_graph=True)
 
         loss_norm_target.backward(retain_graph=True)
 
