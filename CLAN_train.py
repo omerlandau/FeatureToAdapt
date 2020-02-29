@@ -357,9 +357,11 @@ def main():
             loss_adv = bce_loss(D_out,
                           Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(args.gpu))
 
-        loss_adv = loss_adv * Lambda_adv * damping
-        loss_adv.backward(retain_graph=True)
-        
+        loss_adv = loss_adv * Lambda_adv * damping + loss_norm_target
+
+        loss_adv.backward()
+
+
         #Weight Discrepancy Loss
         W5 = None
         W6 = None
@@ -377,7 +379,6 @@ def main():
         loss_weight = loss_weight * Lambda_weight * damping * 2
         loss_weight.backward()
 
-        loss_norm_target.backward()
 
         # feature genralization loss
 
