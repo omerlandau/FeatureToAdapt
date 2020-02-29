@@ -338,7 +338,7 @@ def main():
         loss_norm_target = get_L2norm_loss_self_driven(feature_ext_target)
 
         #Segmentation Loss
-        loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu)) + loss_norm_src
+        loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu)) + loss_norm_src + loss_norm_target
 
         loss_seg.backward()
 
@@ -355,7 +355,7 @@ def main():
             loss_adv = bce_loss(D_out,
                           Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(args.gpu))
 
-        loss_adv = loss_adv * Lambda_adv * damping + loss_norm_target
+        loss_adv = loss_adv * Lambda_adv * damping
 
         loss_adv.backward()
 
