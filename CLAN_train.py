@@ -337,9 +337,9 @@ def main():
 
         loss_norm_target = get_L2norm_loss_self_driven(feature_ext_target)
 
-        loss_feature = loss_norm_src + loss_norm_target
+        loss_norm_src.backward()
 
-        loss_feature.backward(retain_graph = True)
+        loss_norm_target.backward(retain_graph=True)
 
         #Segmentation Loss
         loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
@@ -363,21 +363,24 @@ def main():
         loss_adv.backward()
         
         #Weight Discrepancy Loss
-        #W5 = None
-        #W6 = None
-        #if args.model == 'ResNet':
+        W5 = None
+        W6 = None
+        if args.model == 'ResNet':
 
-        #    for (w5, w6) in zip(model.layer5.parameters(), model.layer6.parameters()):
-        #        if W5 is None and W6 is None:
-        #            W5 = w5.view(-1)
-        #            W6 = w6.view(-1)
-        #        else:
-        #            W5 = torch.cat((W5, w5.view(-1)), 0)
-        #            W6 = torch.cat((W6, w6.view(-1)), 0)
+            for (w5, w6) in zip(model.layer5.parameters(), model.layer6.parameters()):
+                if W5 is None and W6 is None:
+                    W5 = w5.view(-1)
+                    W6 = w6.view(-1)
+                else:
+                    W5 = torch.cat((W5, w5.view(-1)), 0)
+                    W6 = torch.cat((W6, w6.view(-1)), 0)
         
-        #loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
-        #loss_weight = loss_weight * Lambda_weight * damping * 2
-        #loss_weight.backward()
+        loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
+        loss_weight = loss_weight * Lambda_weight * damping * 2
+        loss_weight.backward()
+
+        # feature genralization loss
+
 
         
         #======================================================================================
