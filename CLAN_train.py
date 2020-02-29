@@ -212,6 +212,8 @@ def main():
     
     # Create Network
     model = Res_Deeplab(num_classes=args.num_classes)
+    print(model)
+    repr(model)
     if args.restore_from[:4] == 'http':
         saved_state_dict = model_zoo.load_url(args.restore_from)
     else:
