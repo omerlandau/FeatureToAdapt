@@ -213,7 +213,7 @@ def main():
     # Create Network
     model = Res_Deeplab(num_classes=args.num_classes)
 
-    summary(model, (1, 3, 720, 1280) ,batch_size=1)
+    summary(model, (3, 720, 1280) ,batch_size=1)
     if args.restore_from[:4] == 'http':
         saved_state_dict = model_zoo.load_url(args.restore_from)
     else:
