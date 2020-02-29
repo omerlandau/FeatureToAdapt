@@ -211,9 +211,7 @@ def main():
     cudnn.enabled = True
     
     # Create Network
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = Res_Deeplab(num_classes=args.num_classes)
-    summary(model,(3,720,1280))
     if args.restore_from[:4] == 'http':
         saved_state_dict = model_zoo.load_url(args.restore_from)
     else:
@@ -230,7 +228,7 @@ def main():
         model.load_state_dict(saved_state_dict)
 
     model.train()
-    #model.cuda(args.gpu)
+    model.cuda(args.gpu)
 
 
 

@@ -164,16 +164,27 @@ class ResNet(nn.Module):
         return block(inplanes, dilation_series, padding_series, num_classes)
 
     def forward(self, x):
+        print(x.shape)
         x = self.conv1(x)
+        print(x.shape)
         x = self.bn1(x)
+        print(x.shape)
         x = self.relu(x)
+        print(x.shape)
         x = self.maxpool(x)
+        print(x.shape)
         x = self.layer1(x)
+        print(x.shape)
         x = self.layer2(x)
+        print(x.shape)
         x = self.layer3(x)
+        print(x.shape)
         x = self.layer4(x)
+        print(x.shape)
         x1 = self.layer5(x)
+        print(x.shape)
         x2 = self.layer6(x)
+        print(x.shape)
         return x1, x2
 
     def get_1x_lr_params_NOscale(self):
