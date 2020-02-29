@@ -10,8 +10,6 @@ import torch.nn.functional as F
 import os
 import os.path as osp
 
-from torchsummary import summary
-
 from model.CLAN_G import Res_Deeplab
 from model.CLAN_D import FCDiscriminator
 
@@ -27,7 +25,7 @@ IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32
 MODEL = 'ResNet'
 BATCH_SIZE = 1
 ITER_SIZE = 1
-NUM_WORKERS = 0
+NUM_WORKERS = 4
 
 IGNORE_LABEL = 255
 
@@ -339,9 +337,9 @@ def main():
 
         loss_norm_target = get_L2norm_loss_self_driven(feature_ext_target)
 
-        loss_feature = loss_norm_src + loss_norm_target
+        loss_norm_src.backward(retain_graph=True)
 
-        loss_feature.backward(retain_graph=True)
+        loss_norm_target.backward()
 
         #Segmentation Loss
         loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
