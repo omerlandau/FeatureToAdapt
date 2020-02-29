@@ -17,7 +17,7 @@ from utils.loss import CrossEntropy2d
 from utils.loss import WeightedBCEWithLogitsLoss
 
 from dataset.gta5_dataset import GTA5DataSet
-from dataset.synthia_dataset import SYNTHIADataSet
+#from dataset.synthia_dataset import SYNTHIADataSet
 from dataset.cityscapes_dataset import cityscapesDataSet
 
 IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
