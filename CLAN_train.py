@@ -61,14 +61,14 @@ if SOURCE == 'GTA5':
     Lambda_adv = 0.001
     Lambda_local = 40
     Epsilon = 0.4
-elif SOURCE == 'SYNTHIA':
-    INPUT_SIZE_SOURCE = '1280,760'
-    DATA_DIRECTORY = './data/SYNTHIA/RAND_CITYSCAPES'
-    DATA_LIST_PATH = './dataset/synthia_list/train.txt'
-    Lambda_weight = 0.01
-    Lambda_adv = 0.001
-    Lambda_local = 10
-    Epsilon = 0.4
+#elif SOURCE == 'SYNTHIA':
+#    INPUT_SIZE_SOURCE = '1280,760'
+#    DATA_DIRECTORY = './data/SYNTHIA/RAND_CITYSCAPES'
+#    DATA_LIST_PATH = './dataset/synthia_list/train.txt'
+#    Lambda_weight = 0.01
+#    Lambda_adv = 0.001
+#    Lambda_local = 10
+#    Epsilon = 0.4
     
 INPUT_SIZE_TARGET = '1024,512'
 DATA_DIRECTORY_TARGET = '../data/Cityscapes'
@@ -249,13 +249,13 @@ def main():
             GTA5DataSet(args.data_dir, args.data_list, max_iters=args.num_steps * args.iter_size * args.batch_size,
                         crop_size=input_size_source,
                         scale=True, mirror=True, mean=IMG_MEAN),
-            batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=True)
-    else:
-        trainloader = data.DataLoader(
-            SYNTHIADataSet(args.data_dir, args.data_list, max_iters=args.num_steps * args.iter_size * args.batch_size,
-                        crop_size=input_size_source,
-                        scale=True, mirror=True, mean=IMG_MEAN),
-            batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=True)
+            batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=False)
+    #else:
+    #    trainloader = data.DataLoader(
+    #        SYNTHIADataSet(args.data_dir, args.data_list, max_iters=args.num_steps * args.iter_size * args.batch_size,
+    #                    crop_size=input_size_source,
+    #                    scale=True, mirror=True, mean=IMG_MEAN),
+    #        batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=True)
 
     trainloader_iter = enumerate(trainloader)
 
@@ -265,7 +265,7 @@ def main():
                                                      scale=True, mirror=True, mean=IMG_MEAN,
                                                      set=args.set),
                                    batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers,
-                                   pin_memory=True)
+                                   pin_memory=False)
 
 
     targetloader_iter = enumerate(targetloader)
