@@ -325,11 +325,12 @@ def main():
         pred_source1, pred_source2, feature_ext_src = model(images_s)
         pred_source1 = interp_source(pred_source1)
         pred_source2 = interp_source(pred_source2)
+
+        loss_norm_src = get_L2norm_loss_self_driven(feature_ext_src)
 		
         #Segmentation Loss
         loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
         loss_seg.backward()
-        loss_norm_src = get_L2norm_loss_self_driven(feature_ext_src)
 
         # Train with Target
         _, batch = next(targetloader_iter)
