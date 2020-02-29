@@ -342,12 +342,6 @@ def main():
 
         loss_norm_target = get_L2norm_loss_self_driven(feature_ext_target)
 
-        # feature genralization loss
-
-        loss_feature = loss_norm_src + loss_norm_target
-
-        loss_feature.backward()
-
         weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
         
         D_out = interp_target(model_D(F.softmax(pred_target1 + pred_target2, dim = 1)))
@@ -380,6 +374,12 @@ def main():
         loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
         loss_weight = loss_weight * Lambda_weight * damping * 2
         loss_weight.backward()
+
+        # feature genralization loss
+
+        loss_feature = loss_norm_src + loss_norm_target
+
+        loss_feature.backward()
         
         #======================================================================================
         # train D
