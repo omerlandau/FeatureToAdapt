@@ -25,7 +25,7 @@ IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32
 MODEL = 'ResNet'
 BATCH_SIZE = 1
 ITER_SIZE = 1
-NUM_WORKERS = 0
+NUM_WORKERS = 4
 
 IGNORE_LABEL = 255
 
@@ -249,7 +249,7 @@ def main():
             GTA5DataSet(args.data_dir, args.data_list, max_iters=args.num_steps * args.iter_size * args.batch_size,
                         crop_size=input_size_source,
                         scale=True, mirror=True, mean=IMG_MEAN),
-            batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=False)
+            batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=True)
     #else:
     #    trainloader = data.DataLoader(
     #        SYNTHIADataSet(args.data_dir, args.data_list, max_iters=args.num_steps * args.iter_size * args.batch_size,
@@ -265,7 +265,7 @@ def main():
                                                      scale=True, mirror=True, mean=IMG_MEAN,
                                                      set=args.set),
                                    batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers,
-                                   pin_memory=False)
+                                   pin_memory=True)
 
 
     targetloader_iter = enumerate(targetloader)
