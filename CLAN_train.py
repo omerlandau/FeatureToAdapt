@@ -339,7 +339,7 @@ def main():
 
         loss_feature = loss_norm_src + loss_norm_target
 
-        loss_feature.backward(retain_graph=True)
+        loss_feature.backward()
 		
         #Segmentation Loss
         loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
