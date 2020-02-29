@@ -227,9 +227,9 @@ def main():
     else:
         model.load_state_dict(saved_state_dict)
 
-    model.cuda(args.gpu)
     model.train()
-    summary(model, [(3, 720, 1280), (3, 514, 1024)], batch_size=1)
+    model.cuda(args.gpu)
+    summary(model, [(3, 720, 1280), (3, 514, 1024)])
 
     cudnn.benchmark = True
 
