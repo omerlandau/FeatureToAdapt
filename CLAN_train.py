@@ -327,6 +327,8 @@ def main():
 
         loss_norm_src = get_L2norm_loss_self_driven(feature_ext_src)
 
+        print(loss_norm_src)
+
         #feature generalization loss
 
         loss_norm_src.backward(retain_graph=True)
