@@ -346,8 +346,6 @@ def main():
 
         loss_seg.backward()
 
-        loss_norm_target.backward(retain_graph=True)
-
         weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
         
         D_out = interp_target(model_D(F.softmax(pred_target1 + pred_target2, dim = 1)))
@@ -363,7 +361,9 @@ def main():
 
         loss_adv = loss_adv * Lambda_adv * damping
 
-        loss_adv.backward()
+        loss_adv.backward(retain_graph=True)
+
+        loss_norm_target.backward()
 
 
 
