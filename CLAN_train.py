@@ -339,7 +339,7 @@ def main():
 
         #feature generalization loss
 
-        loss_norm_src.backward(retain_graph=True)
+        #loss_norm_src.backward(retain_graph=True)
 
         #Segmentation Loss
         loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
@@ -361,7 +361,7 @@ def main():
 
         loss_adv = loss_adv * Lambda_adv * damping
 
-        loss_norm_target.backward(retain_graph=True)
+        #loss_norm_target.backward(retain_graph=True)
 
         loss_adv.backward()
 
