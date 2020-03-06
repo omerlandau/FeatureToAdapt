@@ -154,8 +154,11 @@ def get_arguments():
 args = get_arguments()
 
 def get_L2norm_loss_self_driven(x):
+
+    print(x)
     radius = x.norm(p=2, dim=1).detach()
     assert radius.requires_grad == False
+    print(radius)
     radius = radius + 0.3
     l = ((x.norm(p=2, dim=1) - radius) ** 2).mean()
     return args.weight_L2norm * l
