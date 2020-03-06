@@ -361,9 +361,11 @@ def main():
 
         loss_adv = loss_adv * Lambda_adv * damping
 
-        loss_adv.backward(retain_graph=True)
+        loss_norm_target.backward(retain_graph=True)
 
-        loss_norm_target.backward()
+        loss_adv.backward()
+
+
 
 
 
