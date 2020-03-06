@@ -340,12 +340,13 @@ def main():
         #feature generalization loss
 
         loss_norm_src.backward(retain_graph=True)
-        loss_norm_target.backward(retain_graph=True)
 
         #Segmentation Loss
         loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
 
         loss_seg.backward()
+
+        loss_norm_target.backward(retain_graph=True)
 
         weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
         
