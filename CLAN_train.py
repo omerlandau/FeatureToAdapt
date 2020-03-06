@@ -337,8 +337,13 @@ def main():
 
         loss_norm_target = get_L2norm_loss_self_driven(feature_ext_target)
 
+        #feature generalization loss
+
+        loss_norm_src.backward(retain_graph=True)
+        loss_norm_target.backward(retain_graph=True)
+
         #Segmentation Loss
-        loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu)) + loss_norm_src
+        loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
 
         loss_seg.backward()
 
@@ -355,31 +360,30 @@ def main():
             loss_adv = bce_loss(D_out,
                           Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(args.gpu))
 
-        loss_adv = loss_adv * Lambda_adv * damping + loss_norm_target
+        loss_adv = loss_adv * Lambda_adv * damping
 
         loss_adv.backward()
 
 
 
         #Weight Discrepancy Loss
-        #W5 = None
-        #W6 = None
-        #if args.model == 'ResNet':
+        W5 = None
+        W6 = None
+        if args.model == 'ResNet':
 
-        #    for (w5, w6) in zip(model.layer5.parameters(), model.layer6.parameters()):
-        #        if W5 is None and W6 is None:
-        #            W5 = w5.view(-1)
-        #            W6 = w6.view(-1)
-        #        else:
-        #            W5 = torch.cat((W5, w5.view(-1)), 0)
-        #            W6 = torch.cat((W6, w6.view(-1)), 0)
+            for (w5, w6) in zip(model.layer5.parameters(), model.layer6.parameters()):
+                if W5 is None and W6 is None:
+                    W5 = w5.view(-1)
+                    W6 = w6.view(-1)
+                else:
+                    W5 = torch.cat((W5, w5.view(-1)), 0)
+                    W6 = torch.cat((W6, w6.view(-1)), 0)
         
-        #loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
-        #loss_weight = loss_weight * Lambda_weight * damping * 2
-        #loss_weight.backward()
+        loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
+        loss_weight = loss_weight * Lambda_weight * damping * 2
+        loss_weight.backward()
 
 
-        # feature genralization loss
 
 
         
@@ -425,12 +429,12 @@ def main():
 
         print('exp = {}'.format(args.snapshot_dir))
         print(
-        'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f} loss_adv = {3:.4f}, loss_D_s = {5:.4f} loss_D_t = {6:.4f}'.format(
-            i_iter, args.num_steps, loss_seg, loss_adv, loss_D_s, loss_D_t))
+        'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f} loss_adv = {3:.4f}, loss_weight = {4:.4f}, loss_D_s = {5:.4f} loss_D_t = {6:.4f}'.format(
+            i_iter, args.num_steps, loss_seg, loss_adv, loss_weight, loss_D_s, loss_D_t))
 
         f_loss = open(osp.join(args.snapshot_dir,'loss.txt'), 'a')
-        f_loss.write('{0:.4f} {1:.4f} {2:.4f} {4:.4f}\n'.format(
-            loss_seg, loss_adv, loss_D_s, loss_D_t))
+        f_loss.write('{0:.4f} {1:.4f} {2:.4f} {3:.4f} {4:.4f}\n'.format(
+            loss_seg, loss_adv, loss_weight, loss_D_s, loss_D_t))
         f_loss.close()
         
         if i_iter >= args.num_steps_stop - 1:
