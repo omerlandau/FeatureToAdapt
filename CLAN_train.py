@@ -324,14 +324,6 @@ def main():
         pred_source1 = interp_source(pred_source1)
         pred_source2 = interp_source(pred_source2)
 
-        # Train with Target
-        _, batch = next(targetloader_iter)
-        images_t, _, _, _ = batch
-        images_t = Variable(images_t).cuda(args.gpu)
-
-        pred_target1, pred_target2 = model(images_t)
-        pred_target1 = interp_target(pred_target1)
-        pred_target2 = interp_target(pred_target2)
 
         #loss_norm_src = get_L2norm_loss_self_driven(feature_ext_src)
 
@@ -345,6 +337,15 @@ def main():
         loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
 
         loss_seg.backward()
+
+        # Train with Target
+        _, batch = next(targetloader_iter)
+        images_t, _, _, _ = batch
+        images_t = Variable(images_t).cuda(args.gpu)
+
+        pred_target1, pred_target2 = model(images_t)
+        pred_target1 = interp_target(pred_target1)
+        pred_target2 = interp_target(pred_target2)
 
         weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
         
