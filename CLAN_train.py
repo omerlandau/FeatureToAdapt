@@ -320,7 +320,7 @@ def main():
         _, batch = next(trainloader_iter)
         images_s, labels_s, _, _, _ = batch
         images_s = Variable(images_s).cuda(args.gpu)
-        pred_source1, pred_source2, feature_ext_src = model(images_s)
+        pred_source1, pred_source2 = model(images_s)
         pred_source1 = interp_source(pred_source1)
         pred_source2 = interp_source(pred_source2)
 
@@ -329,7 +329,7 @@ def main():
         images_t, _, _, _ = batch
         images_t = Variable(images_t).cuda(args.gpu)
 
-        pred_target1, pred_target2, feature_ext_target = model(images_t)
+        pred_target1, pred_target2 = model(images_t)
         pred_target1 = interp_target(pred_target1)
         pred_target2 = interp_target(pred_target2)
 
