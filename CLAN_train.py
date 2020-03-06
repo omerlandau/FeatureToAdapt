@@ -333,9 +333,9 @@ def main():
         pred_target1 = interp_target(pred_target1)
         pred_target2 = interp_target(pred_target2)
 
-        loss_norm_src = get_L2norm_loss_self_driven(feature_ext_src)
+        #loss_norm_src = get_L2norm_loss_self_driven(feature_ext_src)
 
-        loss_norm_target = get_L2norm_loss_self_driven(feature_ext_target)
+        #loss_norm_target = get_L2norm_loss_self_driven(feature_ext_target)
 
         #feature generalization loss
 
