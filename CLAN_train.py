@@ -157,10 +157,10 @@ def get_L2norm_loss_self_driven(x):
 
     radius = x.norm(p=2, dim=1).detach()
     assert radius.requires_grad == False
-    radius = radius + 0.3
+    radius = radius + 0.009
     n = x.norm(p=2, dim=1)
     l = ((n - radius) ** 2).mean()
-    return args.weight_L2norm * l
+    return l
 
 def loss_calc(pred, label, gpu):
     """
