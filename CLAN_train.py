@@ -153,11 +153,35 @@ def get_arguments():
 
 args = get_arguments()
 
+
+def sort_rows(matrix, num_rows):
+    matrix_T = torch.transpose(matrix,0,1)
+    sorted_matrix_T = torch.topk(matrix_T, num_rows)[0]
+    return torch.transpose(sorted_matrix_T, 0, 1)
+
+
+def discrepancy_slice_wasserstein(p1, p2):
+    s = p1.size()
+    if list(p1.size())[1] > 1:
+        # For data more than one-dimensional, perform multiple random projection to 1-D
+        proj = torch.randn([p1.size()[1], 128])
+        proj *= torch.rsqrt((proj**2).sum(keepdim=True, dim=0))
+        p1 = torch.matmul(p1, proj)
+        p2 = torch.matmul(p2, proj)
+    p1 = sort_rows(p1, s[0])
+    p2 = sort_rows(p2, s[0])
+    wdist = torch.mean((p1 - p2)**2)
+    return torch.mean(wdist)
+
+
+def loss_calc(pred, label, gpu):
+
+
 def get_L2norm_loss_self_driven(x):
 
     radius = x.norm(p=2, dim=1).detach()
     assert radius.requires_grad == False
-    radius = radius + 0.009
+    radius = radius + 0.15
     n = x.norm(p=2, dim=1)
     l = ((n - radius) ** 2).mean()
     return l
@@ -327,7 +351,7 @@ def main():
         pred_source2 = interp_source(pred_source2)
 
 
-        loss_norm_src = get_L2norm_loss_self_driven(feature_ext_src)
+        loss_norm_src = 0.0002*get_L2norm_loss_self_driven(feature_ext_src)
 
         #feature generalization loss
 
@@ -347,7 +371,7 @@ def main():
         pred_target1 = interp_target(pred_target1)
         pred_target2 = interp_target(pred_target2)
 
-        loss_norm_target = get_L2norm_loss_self_driven(feature_ext_target)
+        loss_norm_target = 0.0002*get_L2norm_loss_self_driven(feature_ext_target)
 
         loss_norm_target.backward(retain_graph=True)
 
