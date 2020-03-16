@@ -162,12 +162,12 @@ def sort_rows(matrix, num_rows):
 
 def discrepancy_slice_wasserstein(p1, p2):
     s = p1.size()
-    if list(p1.size())[1] > 1:
+    #if list(p1.size())[1] > 1:
         # For data more than one-dimensional, perform multiple random projection to 1-D
-        proj = torch.randn([p1.size()[1], 128])
-        proj *= torch.rsqrt((proj**2).sum(keepdim=True, dim=0))
-        p1 = torch.matmul(p1, proj)
-        p2 = torch.matmul(p2, proj)
+    #    proj = torch.randn([p1.size()[1], 128])
+    #    proj *= torch.rsqrt((proj**2).sum(keepdim=True, dim=0))
+    #    p1 = torch.matmul(p1, proj)
+    #    p2 = torch.matmul(p2, proj)
     p1 = sort_rows(p1, s[0])
     p2 = sort_rows(p2, s[0])
     wdist = torch.mean((p1 - p2)**2)
@@ -402,7 +402,7 @@ def main():
                     W5 = torch.cat((W5, w5.view(-1)), 0)
                     W6 = torch.cat((W6, w6.view(-1)), 0)
         
-        print("w5 = {0}, w6 = {1}".format(w5,w6))
+        print("w5 = {0}, w6 = {1}".format(w5, pr))
         loss_weight = discrepancy_slice_wasserstein(w5,w6)
             #(torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
         loss_weight = loss_weight * Lambda_weight * damping * 2
