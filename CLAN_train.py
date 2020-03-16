@@ -57,7 +57,7 @@ if SOURCE == 'GTA5':
     INPUT_SIZE_SOURCE = '1280,720'
     DATA_DIRECTORY = './data/GTA5'
     DATA_LIST_PATH = './dataset/gta5_list/train.txt'
-    Lambda_weight = 100
+    Lambda_weight = 10
     Lambda_adv = 0.001
     Lambda_local = 40
     Epsilon = 0.4
