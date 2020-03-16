@@ -166,7 +166,7 @@ def discrepancy_slice_wasserstein(p1, p2):
     print(p2.size())
     if list(p1.size())[1] > 1:
         # For data more than one-dimensional, perform multiple random projection to 1-D
-        proj = torch.randn([p1.size()[1], 128])
+        proj = torch.randn([p1.size()[1], 128]).cuda(args.gpu)
         print(proj.size())
         proj *= torch.rsqrt((proj**2).sum(keepdim=True, dim=0)).cuda(args.gpu)
         p1 = torch.matmul(p1, proj)
