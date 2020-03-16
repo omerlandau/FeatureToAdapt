@@ -142,7 +142,7 @@ def get_arguments():
                         help="Where to save snapshots of the model.")
     parser.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY,
                         help="Regularisation parameter for L2-loss.")
-    parser.add_argument("--gpu", type=int, default=1,
+    parser.add_argument("--gpu", type=int, default=2,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose adaptation set.")
@@ -409,8 +409,8 @@ def main():
         
         #print("w5 = {0}, w6 = {1}".format(w5, w6))
 
-        w5 = w5.reshape([1,19])
-        w6 = w6.reshape([1,19])
+        w5 = w5.reshape([19,1])
+        w6 = w6.reshape([19,1])
         print("w5 = {0}, w6 = {1}".format(w5, w6))
         loss_weight = discrepancy_slice_wasserstein(w5, w6)
         #(torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
