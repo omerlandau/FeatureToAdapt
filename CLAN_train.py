@@ -174,9 +174,6 @@ def discrepancy_slice_wasserstein(p1, p2):
     return torch.mean(wdist)
 
 
-def loss_calc(pred, label, gpu):
-
-
 def get_L2norm_loss_self_driven(x):
 
     radius = x.norm(p=2, dim=1).detach()
