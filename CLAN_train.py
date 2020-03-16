@@ -372,9 +372,16 @@ def main():
 
         #loss_norm_target.backward(retain_graph=True)
 
+        loss_weight = discrepancy_slice_wasserstein(pred_target1,pred_target2)
+            #(torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
+        loss_weight = -loss_weight * Lambda_weight * damping * 2
+        print(loss_weight)
+        loss_weight.backward(retain_graph=True)
+
         weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
         
         D_out = interp_target(model_D(F.softmax(pred_target1 + pred_target2, dim = 1)))
+
         
         #Adaptive Adversarial Loss
         if(i_iter > PREHEAT_STEPS):
@@ -386,7 +393,7 @@ def main():
                           Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(args.gpu))
 
         loss_adv = loss_adv * Lambda_adv * damping
-        loss_adv.backward(retain_graph=True)
+        loss_adv.backward()
 
 
         #Weight Discrepancy Loss
@@ -403,11 +410,7 @@ def main():
                     W6 = torch.cat((W6, w6.view(-1)), 0)
         
         print("w5 = {0}, w6 = {1}".format(w5, w6))
-        loss_weight = discrepancy_slice_wasserstein(pred_target1,pred_target2)
-            #(torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
-        loss_weight = -loss_weight * Lambda_weight * damping * 2
-        print(loss_weight)
-        loss_weight.backward()
+
 
 
 
