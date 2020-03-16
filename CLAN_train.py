@@ -57,7 +57,7 @@ if SOURCE == 'GTA5':
     INPUT_SIZE_SOURCE = '1280,720'
     DATA_DIRECTORY = './data/GTA5'
     DATA_LIST_PATH = './dataset/gta5_list/train.txt'
-    Lambda_weight = 0.01
+    Lambda_weight = 100
     Lambda_adv = 0.001
     Lambda_local = 40
     Epsilon = 0.4
@@ -409,11 +409,11 @@ def main():
         
         #print("w5 = {0}, w6 = {1}".format(w5, w6))
 
-        #w5 = w5.reshape([1,19])
-        #w6 = w6.reshape([1,19])
+        w5 = w5.reshape([1,19])
+        w6 = w6.reshape([1,19])
         print("w5 = {0}, w6 = {1}".format(w5, w6))
-        loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
-        # discrepancy_slice_wasserstein(w5, w6)
+        loss_weight = discrepancy_slice_wasserstein(w5, w6)
+        #(torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
         print(loss_weight)
         loss_weight = -loss_weight * Lambda_weight * damping * 2
         print(loss_weight)
