@@ -163,6 +163,7 @@ def sort_rows(matrix, num_rows):
 def discrepancy_slice_wasserstein(p1, p2):
     s = p1.size()
     print(p1.size())
+    print(p2.size())
     if list(p1.size())[1] > 1:
         # For data more than one-dimensional, perform multiple random projection to 1-D
         proj = torch.randn([p1.size()[1], 128]).cuda(args.gpu)
@@ -408,7 +409,7 @@ def main():
         
         print("w5 = {0}, w6 = {1}".format(w5, w6))
 
-        loss_weight = discrepancy_slice_wasserstein(pred_target1, pred_target2)
+        loss_weight = discrepancy_slice_wasserstein(w5, w6)
         # (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
         loss_weight = -loss_weight * Lambda_weight * damping * 2
         print(loss_weight)
