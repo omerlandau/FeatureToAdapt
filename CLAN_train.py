@@ -351,11 +351,11 @@ def main():
         pred_source2 = interp_source(pred_source2)
 
 
-        loss_norm_src = 0.0002*get_L2norm_loss_self_driven(feature_ext_src)
+        #loss_norm_src = 0.0002*get_L2norm_loss_self_driven(feature_ext_src)
 
         #feature generalization loss
 
-        loss_norm_src.backward(retain_graph=True)
+        #loss_norm_src.backward(retain_graph=True)
 
         #Segmentation Loss
         loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
