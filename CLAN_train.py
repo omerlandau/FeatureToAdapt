@@ -164,7 +164,7 @@ def discrepancy_slice_wasserstein(p1, p2):
     s = p1.size()
     if list(p1.size())[1] > 1:
         # For data more than one-dimensional, perform multiple random projection to 1-D
-        proj = torch.randn([p1.size()[1], 128])
+        proj = torch.randn([p1.size()[1], 128]).cuda(args.gpu)
         proj *= torch.rsqrt((proj**2).sum(keepdim=True, dim=0))
         p1 = torch.matmul(p1, proj)
         p2 = torch.matmul(p2, proj)
@@ -372,11 +372,6 @@ def main():
 
         #loss_norm_target.backward(retain_graph=True)
 
-        loss_weight = discrepancy_slice_wasserstein(pred_target1,pred_target2)
-            #(torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
-        loss_weight = -loss_weight * Lambda_weight * damping * 2
-        print(loss_weight)
-        loss_weight.backward(retain_graph=True)
 
         weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
         
@@ -393,7 +388,7 @@ def main():
                           Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(args.gpu))
 
         loss_adv = loss_adv * Lambda_adv * damping
-        loss_adv.backward()
+        loss_adv.backward(retain_graph=True)
 
 
         #Weight Discrepancy Loss
@@ -410,6 +405,12 @@ def main():
                     W6 = torch.cat((W6, w6.view(-1)), 0)
         
         print("w5 = {0}, w6 = {1}".format(w5, w6))
+
+        loss_weight = discrepancy_slice_wasserstein(pred_target1, pred_target2)
+        # (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
+        loss_weight = -loss_weight * Lambda_weight * damping * 2
+        print(loss_weight)
+        loss_weight.backward()
 
 
 
