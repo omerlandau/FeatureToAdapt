@@ -360,7 +360,7 @@ def main():
         loss_norm_src.backward(retain_graph=True)
 
         #Segmentation Loss
-        loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
+        loss_seg = 0.3*(loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu)) + 0.7*loss_calc(pred_source1 + pred_source2, labels_s, args.gpu)
 
         loss_seg.backward()
 
