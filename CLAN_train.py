@@ -57,7 +57,7 @@ if SOURCE == 'GTA5':
     INPUT_SIZE_SOURCE = '1280,720'
     DATA_DIRECTORY = './data/GTA5'
     DATA_LIST_PATH = './dataset/gta5_list/train.txt'
-    Lambda_weight = 0.8
+    Lambda_weight = 0.3
     Lambda_adv = 0.001
     Lambda_local = 40
     Epsilon = 0.4
@@ -142,7 +142,7 @@ def get_arguments():
                         help="Where to save snapshots of the model.")
     parser.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY,
                         help="Regularisation parameter for L2-loss.")
-    parser.add_argument("--gpu", type=int, default=3,
+    parser.add_argument("--gpu", type=int, default=0,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose adaptation set.")
