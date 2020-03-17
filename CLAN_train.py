@@ -412,12 +412,12 @@ def main():
 
         w5 = w5.reshape([1,19])
         w6 = w6.reshape([1,19])
-        #print("w5 = {0}, w6 = {1}".format(w5, w6))
+        print("w5 = {0}, w6 = {1}".format(w5, w6))
         #loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
         loss_weight = discrepancy_slice_wasserstein(w5, w6)
-        #print(loss_weight)
+        print(loss_weight)
         loss_weight = -loss_weight * Lambda_weight * damping * 2
-        #print(loss_weight)
+        print(loss_weight)
         loss_weight.backward()
 
 
