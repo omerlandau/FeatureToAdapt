@@ -142,7 +142,7 @@ def get_arguments():
                         help="Where to save snapshots of the model.")
     parser.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY,
                         help="Regularisation parameter for L2-loss.")
-    parser.add_argument("--gpu", type=int, default=3,
+    parser.add_argument("--gpu", type=int, default=1,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose adaptation set.")
@@ -353,7 +353,7 @@ def main():
         pred_source2 = interp_source(pred_source2)
 
 
-        loss_norm_src = 0.0002*get_L2norm_loss_self_driven(feature_ext_src)*damping_norm
+        loss_norm_src = 0.00015*get_L2norm_loss_self_driven(feature_ext_src)*damping_norm
 
         #feature generalization loss
 
@@ -373,7 +373,7 @@ def main():
         pred_target1 = interp_target(pred_target1)
         pred_target2 = interp_target(pred_target2)
 
-        loss_norm_target = 0.0002*get_L2norm_loss_self_driven(feature_ext_target)*damping_norm
+        loss_norm_target = 0.00015*get_L2norm_loss_self_driven(feature_ext_target)*damping_norm
 
         loss_norm_target.backward(retain_graph=True)
 
