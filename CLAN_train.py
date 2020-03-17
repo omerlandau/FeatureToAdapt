@@ -57,7 +57,7 @@ if SOURCE == 'GTA5':
     INPUT_SIZE_SOURCE = '1280,720'
     DATA_DIRECTORY = './data/GTA5'
     DATA_LIST_PATH = './dataset/gta5_list/train.txt'
-    Lambda_weight = 0.01
+    Lambda_weight = 0.2
     Lambda_adv = 0.001
     Lambda_local = 40
     Epsilon = 0.4
@@ -142,7 +142,7 @@ def get_arguments():
                         help="Where to save snapshots of the model.")
     parser.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY,
                         help="Regularisation parameter for L2-loss.")
-    parser.add_argument("--gpu", type=int, default=0,
+    parser.add_argument("--gpu", type=int, default=2,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose adaptation set.")
@@ -166,7 +166,7 @@ def discrepancy_slice_wasserstein(p1, p2):
     print(p2.size())
     if list(p1.size())[1] > 1:
         # For data more than one-dimensional, perform multiple random projection to 1-D
-        proj = torch.randn([p1.size()[1], 128])
+        proj = torch.randn([p1.size()[1], 8])
         print(proj.size())
         proj *= torch.rsqrt((proj**2).sum(keepdim=True, dim=0))
         proj = proj.cuda(args.gpu)
@@ -181,6 +181,7 @@ def discrepancy_slice_wasserstein(p1, p2):
 def get_L2norm_loss_self_driven(x):
 
     radius = x.norm(p=2, dim=1).detach()
+    print(radius)
     assert radius.requires_grad == False
     radius = radius + 0.15
     n = x.norm(p=2, dim=1)
@@ -409,16 +410,16 @@ def main():
                     W5 = torch.cat((W5, w5.view(-1)), 0)
                     W6 = torch.cat((W6, w6.view(-1)), 0)
         
-        #print("w5 = {0}, w6 = {1}".format(w5, w6))
+        print("w5 = {0}, w6 = {1}".format(w5, w6))
 
-        #w5 = w5.reshape([1,19])
-        #w6 = w6.reshape([1,19])
+        w5 = w5.reshape([1,19])
+        w6 = w6.reshape([1,19])
         #print("w5 = {0}, w6 = {1}".format(w5, w6))
         #loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
-        #loss_weight = discrepancy_slice_wasserstein(w5, w6)
-        #print(loss_weight)
-        #loss_weight = -loss_weight * Lambda_weight * damping
-        loss_weight = loss_weight * Lambda_weight * damping * 2
+        loss_weight = discrepancy_slice_wasserstein(w5, w6)
+        print(loss_weight)
+        loss_weight = -loss_weight * Lambda_weight * damping
+        #loss_weight = loss_weight * Lambda_weight * damping * 2
         #print(loss_weight)
         loss_weight.backward()
 
