@@ -181,7 +181,6 @@ def discrepancy_slice_wasserstein(p1, p2):
 def get_L2norm_loss_self_driven(x):
 
     radius = x.norm(p=2, dim=1).detach()
-    print(radius)
     assert radius.requires_grad == False
     radius = radius + 0.15
     n = x.norm(p=2, dim=1)
@@ -420,7 +419,7 @@ def main():
         print(loss_weight)
         loss_weight = -loss_weight * Lambda_weight * damping
         #loss_weight = loss_weight * Lambda_weight * damping * 2
-        #print(loss_weight)
+        print(loss_weight)
         loss_weight.backward()
 
 
