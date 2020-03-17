@@ -409,7 +409,7 @@ def main():
                     W5 = torch.cat((W5, w5.view(-1)), 0)
                     W6 = torch.cat((W6, w6.view(-1)), 0)
         
-        #print("w5 = {0}, w6 = {1}".format(w5, w6))
+        print("w5 = {0}, w6 = {1}".format(w5, w6))
 
         #w5 = w5.reshape([1,19])
         #w6 = w6.reshape([1,19])
