@@ -57,7 +57,7 @@ def get_arguments():
                         help="Number of classes to predict (including background).")
     parser.add_argument("--restore-from", type=str, default=RESTORE_FROM,
                         help="Where restore model parameters from.")
-    parser.add_argument("--gpu", type=int, default=0,
+    parser.add_argument("--gpu", type=int, default=4,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose evaluation set.")
