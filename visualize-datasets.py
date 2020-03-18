@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import os.path as osp
+from sklearn.manifold import TSNE
 import pickle as pkl
 
 
@@ -11,6 +12,7 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
     r_images = []
     c=0
     print(len(images_p))
+    splitted_imagesdict = []
     for image_p, label_p in zip(images_p, labels_p):
 
         image = Image.open(osp.join(direct_i, image_p))
@@ -30,7 +32,6 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
             label3 = 3 * label2[0] + 5 * label2[1] + 7 * label2[2] + 11 * label2[3]
             ids = np.unique(label3)
             ids = np.sort(ids)
-        splitted_imagesdict = []
         for i in ids:
             imaget = np.copy(image1)
             mapfig = np.isin(label3, i)
@@ -46,14 +47,14 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
         c +=1
         if(c%10==0):
             print('done with:{0} images'.format(c))
-        r_images.append(splitted_imagesdict)
-    return r_images
+
+    tsne = TSNE(n_components=2, learning_rate=150, perplexity=30, angle=0.2, verbose=2).fit_transform(imagesdict)
+    return tsne
 
 
 def main():
 
-    gta_ids = ['00201.png']
-    """
+    gta_ids = ['00201.png',
                '00202.png',
                '00203.png',
                '00204.png',
@@ -88,7 +89,8 @@ def main():
                '00233.png',
                '00234.png',
                '00235.png',
-               '00236.png',
+               '00236.png']
+    """
                '00237.png',
                '00238.png',
                '00239.png',
