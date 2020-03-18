@@ -1558,5 +1558,15 @@ def main():
     with open("./GTA_split", 'wb') as pfile:
         pickle.dump(gta_images, pfile, protocol=pickle.HIGHEST_PROTOCOL)
 
+    print('Dumped GTA pickle')
+
     with open("./City_split", 'wb') as pfile:
         pickle.dump(city_images, pfile, protocol=pickle.HIGHEST_PROTOCOL)
+
+    print('Dumped City pickle')
+
+
+if __name__ == '__main__':
+    print('start')
+    main()
+    print('end')
