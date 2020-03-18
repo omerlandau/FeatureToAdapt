@@ -48,7 +48,7 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
         if(c%10==0):
             print('done with:{0} images'.format(c))
 
-    tsne = TSNE(n_components=2, learning_rate=150, perplexity=30, angle=0.2, verbose=2).fit_transform(imagesdict)
+    tsne = TSNE(n_components=2, learning_rate=150, perplexity=30, angle=0.2, verbose=2).fit_transform(splitted_imagesdict)
     return tsne
 
 
