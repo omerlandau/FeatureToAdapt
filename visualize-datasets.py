@@ -52,7 +52,8 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
 
 def main():
 
-    gta_ids = ['00201.png',
+    gta_ids = ['00201.png']
+    """
                '00202.png',
                '00203.png',
                '00204.png',
@@ -177,7 +178,7 @@ def main():
                '00397.png',
                '00699.png',
                '00700.png']
-
+"""
     city_ids_i = ['frankfurt/frankfurt_000000_003357_leftImg8bit.png',
                   'frankfurt/frankfurt_000000_020880_leftImg8bit.png',
                   'frankfurt/frankfurt_000001_062396_leftImg8bit.png',
@@ -455,6 +456,8 @@ def main():
         pkl.dump(gta_images, pfile, protocol=pkl.HIGHEST_PROTOCOL)
 
     print('Dumped GTA pickle')
+
+    exit()
 
     city_images = split_all_imgaes(city_ids_l,city_ids_i,type='city', direct_l='./data/CitySpaces/gtFine/val', direct_i='./data/CitySpaces/leftImg8bit/val')
 
