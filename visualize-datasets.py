@@ -9,10 +9,10 @@ import pickle as pkl
 
 def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
     r_images = []
-
+    c=0
     for image_p, label_p in zip(images_p, labels_p):
 
-        c = 0
+
 
         image = Image.open(osp.join(direct_i, image_p))
         label = Image.open(osp.join(direct_l, image_p))
@@ -45,7 +45,8 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
             imaget = imaget.flatten()
             splitted_imagesdict.append(imaget)
         c +=1
-        print('done with:{0} images'.format(c))
+        if(c%10==0):
+            print('done with:{0} images'.format(c))
         r_images.append(splitted_imagesdict)
     return r_images
 
