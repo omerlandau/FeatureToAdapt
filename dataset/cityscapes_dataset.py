@@ -82,4 +82,4 @@ if __name__ == '__main__':
             img = np.transpose(img, (1, 2, 0))
             img = img[:, :, ::-1]
             plt.imshow(img)
-            plt.show()
+            plt.save()
