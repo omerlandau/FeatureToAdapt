@@ -57,7 +57,7 @@ if SOURCE == 'GTA5':
     INPUT_SIZE_SOURCE = '1280,720'
     DATA_DIRECTORY = './data/GTA5'
     DATA_LIST_PATH = './dataset/gta5_list/train.txt'
-    Lambda_weight = 0.5
+    Lambda_weight = 0.01
     Lambda_adv = 0.001
     Lambda_local = 40
     Epsilon = 0.4
@@ -334,7 +334,7 @@ def main():
         adjust_learning_rate_D(optimizer_D, i_iter)
         
         damping = (1 - i_iter/NUM_STEPS)
-        damping_norm = (1 - (i_iter*1.5)/(NUM_STEPS))
+        damping_norm = (1 - (i_iter)/(NUM_STEPS))
 
         #======================================================================================
         # train G
@@ -353,7 +353,7 @@ def main():
         pred_source2 = interp_source(pred_source2)
 
 
-        loss_norm_src = 0.0002*get_L2norm_loss_self_driven(feature_ext_src)*damping_norm
+        loss_norm_src = 0.001*get_L2norm_loss_self_driven(feature_ext_src)*damping_norm
 
         #feature generalization loss
 
@@ -373,7 +373,7 @@ def main():
         pred_target1 = interp_target(pred_target1)
         pred_target2 = interp_target(pred_target2)
 
-        loss_norm_target = 0.0002*get_L2norm_loss_self_driven(feature_ext_target)*damping_norm
+        loss_norm_target = 0.001*get_L2norm_loss_self_driven(feature_ext_target)*damping_norm
 
         loss_norm_target.backward(retain_graph=True)
 
@@ -409,17 +409,17 @@ def main():
                     W5 = torch.cat((W5, w5.view(-1)), 0)
                     W6 = torch.cat((W6, w6.view(-1)), 0)
         
-        print("w5 = {0}, w6 = {1}".format(w5, w6))
+        #print("w5 = {0}, w6 = {1}".format(w5, w6))
 
-        w5 = w5.reshape([1,19])
-        w6 = w6.reshape([1,19])
+        #w5 = w5.reshape([1,19])
+        #w6 = w6.reshape([1,19])
         #print("w5 = {0}, w6 = {1}".format(w5, w6))
         #loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
-        loss_weight = discrepancy_slice_wasserstein(w5, w6)
-        print(loss_weight)
-        loss_weight = (-loss_weight * Lambda_weight * damping + 0.1)
-        #loss_weight = loss_weight * Lambda_weight * damping * 2
-        print(loss_weight)
+        #loss_weight = discrepancy_slice_wasserstein(w5, w6)
+        #print(loss_weight)
+        #loss_weight = (-loss_weight * Lambda_weight * damping + 0.1)
+        loss_weight = loss_weight * Lambda_weight * damping * 2
+        #print(loss_weight)
         loss_weight.backward()
 
 
