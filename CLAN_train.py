@@ -334,7 +334,10 @@ def main():
         adjust_learning_rate_D(optimizer_D, i_iter)
         
         damping = (1 - i_iter/NUM_STEPS)
-        damping_norm = (1 - (1.5*i_iter)/(NUM_STEPS))
+        damping_norm = (1 - (1.5 * i_iter) / (NUM_STEPS))
+        if(damping_norm<0):
+            damping_norm = damping
+
 
         #======================================================================================
         # train G
