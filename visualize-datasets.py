@@ -52,6 +52,7 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
     pca = PCA(n_components=1024)
     pca.fit(splitted_imagesdict)
     X = pca.transform(splitted_imagesdict)
+    print("done PCA")
     tsne = TSNE(n_components=3, learning_rate=150, perplexity=30, angle=0.2, verbose=2).fit_transform(X)
     return tsne
 
