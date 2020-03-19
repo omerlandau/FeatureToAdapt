@@ -17,7 +17,7 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
     for image_p, label_p in zip(images_p, labels_p):
 
         image = Image.open(osp.join(direct_i, image_p))
-        label = Image.open(osp.join(direct_l, labels_p))
+        label = Image.open(osp.join(direct_l, label_p))
         image = np.asarray(image, np.float32)
         shape_x = image.shape[0]
         shape_y = image.shape[1]
