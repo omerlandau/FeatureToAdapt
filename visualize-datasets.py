@@ -14,6 +14,7 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
     c=0
     print(len(images_p))
     splitted_imagesdict = []
+    total_id = []
     for image_p, label_p in zip(images_p, labels_p):
 
         image = Image.open(osp.join(direct_i, image_p))
@@ -52,6 +53,7 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
             imaget = ipca.transform(imaget)
             imaget = imaget.flatten()
             splitted_imagesdict.append(imaget)
+        total_id.append(ids)
         c +=1
         if(c%10==0):
             print('done with:{0} images'.format(c))
@@ -60,8 +62,8 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
     pca.fit(splitted_imagesdict)
     X = pca.transform(splitted_imagesdict)
     print("done PCA")
-    tsne = TSNE(n_components=2, learning_rate=140, perplexity=40, angle=0.2, verbose=2, n_iter=1200).fit_transform(X)
-    return tsne
+    tsne = TSNE(n_components=2, learning_rate=140, perplexity=50, angle=0.2, verbose=2, n_iter=4500).fit_transform(X)
+    return tsne, total_id
 
 
 def main():
@@ -462,19 +464,25 @@ def main():
                   'munster/munster_000076_000019_gtFine_color.png',
                   'munster/munster_000091_000019_gtFine_color.png']
 
-    #gta_images = split_all_imgaes(gta_ids,gta_ids,'GTA',direct_i='./data/GTA5/images', direct_l='./data/GTA5/labels')
+    gta_images,gta_cmap = split_all_imgaes(gta_ids,gta_ids,'GTA',direct_i='./data/GTA5/images', direct_l='./data/GTA5/labels')
 
 
-    #with open("./GTA_split", 'wb') as pfile:
-    #    pkl.dump(gta_images, pfile, protocol=3)
+    with open("./GTA_tsne", 'wb') as pfile:
+        pkl.dump(gta_images, pfile, protocol=3)
 
-    #print('Dumped GTA pickle')
+    with open("./GTA_cmap", 'wb') as pfile:
+        pkl.dump(gta_cmap, pfile, protocol=3)
 
-    city_images = split_all_imgaes(city_ids_i,city_ids_l,type='city', direct_l='./data/CitySpaces/gtFine/val', direct_i='./data/CitySpaces/leftImg8bit/val')
+    print('Dumped GTA pickle')
+
+    city_images, city_cmap = split_all_imgaes(city_ids_i,city_ids_l,type='city', direct_l='./data/CitySpaces/gtFine/val', direct_i='./data/CitySpaces/leftImg8bit/val')
 
 
-    with open("./City_split", 'wb') as pfile:
+    with open("./City_tsne", 'wb') as pfile:
         pkl.dump(city_images, pfile, protocol=3)
+
+    with open("./City_cmap", 'wb') as pfile:
+        pkl.dump(city_cmap, pfile, protocol=3)
 
     print('Dumped City pickle')
 
