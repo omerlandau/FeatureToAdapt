@@ -462,13 +462,13 @@ def main():
                   'munster/munster_000076_000019_gtFine_color.png',
                   'munster/munster_000091_000019_gtFine_color.png']
 
-    gta_images = split_all_imgaes(gta_ids,gta_ids,'GTA',direct_i='./data/GTA5/images', direct_l='./data/GTA5/labels')
+    #gta_images = split_all_imgaes(gta_ids,gta_ids,'GTA',direct_i='./data/GTA5/images', direct_l='./data/GTA5/labels')
 
 
-    with open("./GTA_split", 'wb') as pfile:
-        pkl.dump(gta_images, pfile, protocol=3)
+    #with open("./GTA_split", 'wb') as pfile:
+    #    pkl.dump(gta_images, pfile, protocol=3)
 
-    print('Dumped GTA pickle')
+    #print('Dumped GTA pickle')
 
     city_images = split_all_imgaes(city_ids_i,city_ids_l,type='city', direct_l='./data/CitySpaces/gtFine/val', direct_i='./data/CitySpaces/leftImg8bit/val')
 
