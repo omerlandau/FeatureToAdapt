@@ -42,9 +42,9 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
             mapfigx = np.copy(mapfig)
             mapfigy = np.copy(mapfig)
             mapfigz = np.copy(mapfig)
-            np.copyto(imaget[0], 0, where=np.invert(mapfigx))
-            np.copyto(imaget[1], 0, where=np.invert(mapfigy))
-            np.copyto(imaget[2], 0, where=np.invert(mapfigz))
+            np.copyto(imaget[0], 255, where=np.invert(mapfigx))
+            np.copyto(imaget[1], 255, where=np.invert(mapfigy))
+            np.copyto(imaget[2], 255, where=np.invert(mapfigz))
             imaget = imaget.T
             imaget = imaget.flatten()
             imaget = imaget.reshape((shape_x, shape_y, 3))
@@ -58,11 +58,11 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
         if(c%10==0):
             print('done with:{0} images'.format(c))
 
-    pca = PCA()
+    pca = PCA(64)
     pca.fit(splitted_imagesdict)
     X = pca.transform(splitted_imagesdict)
     print("done PCA")
-    tsne = TSNE(n_components=2, learning_rate=140, perplexity=50, angle=0.2, verbose=2, n_iter=4500).fit_transform(X)
+    tsne = TSNE(n_components=2, learning_rate=140, perplexity=30, angle=0.2, verbose=2, n_iter=4500).fit_transform(X)
     return tsne, total_id
 
 

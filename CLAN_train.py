@@ -334,7 +334,7 @@ def main():
         adjust_learning_rate_D(optimizer_D, i_iter)
         
         damping = (1 - i_iter/NUM_STEPS)
-        damping_norm = (1 - (i_iter)/(NUM_STEPS))
+        damping_norm = (1 - (1.5*i_iter)/(NUM_STEPS))
 
         #======================================================================================
         # train G
@@ -353,14 +353,14 @@ def main():
         pred_source2 = interp_source(pred_source2)
 
 
-        loss_norm_src = 0.001*get_L2norm_loss_self_driven(feature_ext_src)*damping_norm
+        loss_norm_src = 0.00015*get_L2norm_loss_self_driven(feature_ext_src)*damping_norm
 
         #feature generalization loss
 
         loss_norm_src.backward(retain_graph=True)
 
         #Segmentation Loss
-        loss_seg = 0.7*(loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu)) + 0.3*loss_calc(pred_source1 + pred_source2, labels_s, args.gpu)
+        loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu)) #0.3*loss_calc(pred_source1 + pred_source2, labels_s, args.gpu)
         #loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
         loss_seg.backward()
 
@@ -373,7 +373,7 @@ def main():
         pred_target1 = interp_target(pred_target1)
         pred_target2 = interp_target(pred_target2)
 
-        loss_norm_target = 0.001*get_L2norm_loss_self_driven(feature_ext_target)*damping_norm
+        loss_norm_target = 0.00015*get_L2norm_loss_self_driven(feature_ext_target)*damping_norm
 
         loss_norm_target.backward(retain_graph=True)
 
