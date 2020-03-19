@@ -49,7 +49,7 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
         if(c%10==0):
             print('done with:{0} images'.format(c))
 
-    pca = PCA(n_components=1024)
+    pca = PCA()
     pca.fit(splitted_imagesdict)
     X = pca.transform(splitted_imagesdict)
     print("done PCA")
