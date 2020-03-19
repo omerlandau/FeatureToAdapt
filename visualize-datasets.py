@@ -51,7 +51,6 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
             ipca = PCA(n_components=64, svd_solver='randomized').fit(imaget)
             imaget = ipca.transform(imaget)
             imaget = imaget.flatten()
-            imagesdict.append(imaget)
             splitted_imagesdict.append(imaget)
         c +=1
         if(c%10==0):
