@@ -466,7 +466,7 @@ def main():
 
 
     with open("./GTA_split", 'wb') as pfile:
-        pkl.dump(gta_images, pfile, protocol=pkl.HIGHEST_PROTOCOL)
+        pkl.dump(gta_images, pfile, protocol=3)
 
     print('Dumped GTA pickle')
 
@@ -474,7 +474,7 @@ def main():
 
 
     with open("./City_split", 'wb') as pfile:
-        pkl.dump(city_images, pfile, protocol=pkl.HIGHEST_PROTOCOL)
+        pkl.dump(city_images, pfile, protocol=3)
 
     print('Dumped City pickle')
 
