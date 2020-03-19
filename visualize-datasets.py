@@ -72,8 +72,7 @@ def main():
                '00211.png',
                '00212.png',
                '00213.png',
-               '00214.png']
-    """
+               '00214.png'
                '00215.png',
                '00216.png',
                '00217.png',
@@ -95,8 +94,7 @@ def main():
                '00233.png',
                '00234.png',
                '00235.png',
-               '00236.png']
-    
+               '00236.png',
                '00237.png',
                '00238.png',
                '00239.png',
@@ -186,7 +184,7 @@ def main():
                '00397.png',
                '00699.png',
                '00700.png']
-"""
+
     city_ids_i = ['frankfurt/frankfurt_000000_003357_leftImg8bit.png',
                   'frankfurt/frankfurt_000000_020880_leftImg8bit.png',
                   'frankfurt/frankfurt_000001_062396_leftImg8bit.png',
@@ -464,8 +462,6 @@ def main():
         pkl.dump(gta_images, pfile, protocol=pkl.HIGHEST_PROTOCOL)
 
     print('Dumped GTA pickle')
-
-    exit()
 
     city_images = split_all_imgaes(city_ids_l,city_ids_i,type='city', direct_l='./data/CitySpaces/gtFine/val', direct_i='./data/CitySpaces/leftImg8bit/val')
 
