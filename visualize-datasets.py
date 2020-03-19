@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import os.path as osp
 from sklearn.manifold import TSNE
+from sklearn.decomposition import PCA
 import pickle as pkl
 
 
@@ -48,7 +49,10 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
         if(c%10==0):
             print('done with:{0} images'.format(c))
 
-    tsne = TSNE(n_components=2, learning_rate=150, perplexity=30, angle=0.2, verbose=2).fit_transform(splitted_imagesdict)
+    pca = PCA(n_components=1024)
+    pca.fit(splitted_imagesdict)
+    X = pca.transform(splitted_imagesdict)
+    tsne = TSNE(n_components=3, learning_rate=150, perplexity=30, angle=0.2, verbose=2).fit_transform(X)
     return tsne
 
 
