@@ -470,7 +470,7 @@ def main():
 
     print('Dumped GTA pickle')
 
-    city_images = split_all_imgaes(city_ids_l,city_ids_i,type='city', direct_l='./data/CitySpaces/gtFine/val', direct_i='./data/CitySpaces/leftImg8bit/val')
+    city_images = split_all_imgaes(city_ids_i,city_ids_l,type='city', direct_l='./data/CitySpaces/gtFine/val', direct_i='./data/CitySpaces/leftImg8bit/val')
 
 
     with open("./City_split", 'wb') as pfile:
