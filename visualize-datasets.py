@@ -42,9 +42,9 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
             mapfigx = np.copy(mapfig)
             mapfigy = np.copy(mapfig)
             mapfigz = np.copy(mapfig)
-            np.copyto(imaget[0], 255, where=np.invert(mapfigx))
-            np.copyto(imaget[1], 255, where=np.invert(mapfigy))
-            np.copyto(imaget[2], 255, where=np.invert(mapfigz))
+            np.copyto(imaget[0], 0, where=np.invert(mapfigx))
+            np.copyto(imaget[1], 0, where=np.invert(mapfigy))
+            np.copyto(imaget[2], 0, where=np.invert(mapfigz))
             imaget = imaget.T
             imaget = imaget.flatten()
             imaget = imaget.reshape((shape_x, shape_y, 3))
