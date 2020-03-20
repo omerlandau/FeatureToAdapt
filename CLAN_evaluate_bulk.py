@@ -85,8 +85,8 @@ def main():
     """Create the model and start the evaluation process."""
 
     for i in range(1, 19):
-        model_path = './snapshots/GTA2Cityscapes/GTA5_{0:d}.pth'.format(i*2000)
-        save_path = './result/GTA2Cityscapes_{0:d}'.format(i*2000)
+        model_path = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss/GTA5_{0:d}.pth'.format(i*2000)
+        save_path = './result/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_{0:d}'.format(i*2000)
         args = get_arguments()
     
         gpu0 = args.gpu
