@@ -10,7 +10,7 @@ import torch.nn as nn
 
 model_path = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss/GTA5_40000.pth'
 
-model = Res_Deeplab(num_classes=1)
+model = Res_Deeplab(num_classes=19)
 
 saved_state_dict = torch.load(model_path)
 model.load_state_dict(saved_state_dict)
