@@ -63,7 +63,7 @@ class CrossEntropy2d(nn.Module):
     def forward(self, predict, target):
         N, C, H, W = predict.size()
         sm = nn.Softmax2d()
-        
+        print(target)
         P = sm(predict)
         print(P.shape)
         P = torch.clamp(P, min = 1e-9, max = 1-(1e-9))
@@ -71,9 +71,9 @@ class CrossEntropy2d(nn.Module):
         target_mask = (target >= 0) * (target != self.ignore_label)
         target = target[target_mask].view(1, -1)
         predict = P[target_mask.view(N, 1, H, W).repeat(1, C, 1, 1)].view(C, -1)
-        print(predict)
+        print(predict.shape)
         probs = torch.gather(predict, dim = 0, index = target)
-        print (probs)
+        print(probs.shape)
         log_p = probs.log()
         batch_loss = -(torch.pow((1-probs), self.gamma))*log_p 
 
