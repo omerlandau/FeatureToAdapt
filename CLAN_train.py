@@ -182,7 +182,7 @@ def get_L2norm_loss_self_driven(x):
 
     radius = x.norm(p=2, dim=1).detach()
     assert radius.requires_grad == False
-    radius = radius + 0.15
+    radius = radius + 0.2
     n = x.norm(p=2, dim=1)
     l = ((n - radius) ** 2).mean()
     return l
@@ -334,10 +334,7 @@ def main():
         adjust_learning_rate_D(optimizer_D, i_iter)
         
         damping = (1 - i_iter/NUM_STEPS)
-        damping_norm = (1 - (1.5 * i_iter) / (NUM_STEPS))
-        if(damping_norm<0):
-            damping_norm = damping
-
+        damping_norm = (1 - i_iter/NUM_STEPS)**1.8
 
         #======================================================================================
         # train G
