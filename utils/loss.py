@@ -71,9 +71,8 @@ class CrossEntropy2d(nn.Module):
         target_mask = (target >= 0) * (target != self.ignore_label)
         target = target[target_mask].view(1, -1)
         predict = P[target_mask.view(N, 1, H, W).repeat(1, C, 1, 1)].view(C, -1)
-        print(predict.shape)
         probs = torch.gather(predict, dim = 0, index = target)
-        print(probs.shape)
+        print(probs)
         log_p = probs.log()
         batch_loss = -(torch.pow((1-probs), self.gamma))*log_p 
 
