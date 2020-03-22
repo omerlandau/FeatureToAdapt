@@ -31,7 +31,7 @@ IGNORE_LABEL = 255
 
 MOMENTUM = 0.9
 NUM_CLASSES = 19
-RESTORE_FROM = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss/GTA5_38000.pth'
+RESTORE_FROM = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss/GTA5_40000.pth'
 #RESTORE_FROM = './snapshots/GTA2Cityscapes_CVPR_Syn0820_Wg00005weight005_dampingx2/GTA5_36000.pth' #For retrain
 RESTORE_FROM_D = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss/GTA5_38000_D.pth' #For retrain
 
@@ -142,7 +142,7 @@ def get_arguments():
                         help="Where to save snapshots of the model.")
     parser.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY,
                         help="Regularisation parameter for L2-loss.")
-    parser.add_argument("--gpu", type=int, default=6,
+    parser.add_argument("--gpu", type=int, default=3,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose adaptation set.")
