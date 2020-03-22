@@ -92,13 +92,22 @@ def main():
                                     batch_size=1, shuffle=False, pin_memory=True)
 
     interp = nn.Upsample(size=(1024, 2048), mode='bilinear', align_corners=True)
-    
+
     with torch.no_grad():
+        avg = 0
+        c=0
         for index, batch in enumerate(testloader):
             if index % 100 == 0:
                 print('%d processd' % index)
             image, _, _, name = batch
-            output1, output2, _ = model(Variable(image).cuda(gpu0))
+            output1, output2, norm_dims = model(Variable(image).cuda(gpu0))
+
+            c+=1
+
+            temp = norm_dims.norm(p=2, dim=1)
+
+            avg += temp
+            print("L2 norm of pic {0} = {1}".format(c, temp))
 
             output = interp(output1 + output2).cpu().data[0].numpy()
             
@@ -112,6 +121,8 @@ def main():
             output.save('%s/%s' % (args.save, name))
 
             output_col.save('%s/%s_color.png' % (args.save, name.split('.')[0]))
+
+        print("average L2 norm = {1}".format(avg/c))
 
 
 if __name__ == '__main__':
