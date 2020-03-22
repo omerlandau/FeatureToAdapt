@@ -106,7 +106,7 @@ def main():
 
             n = norm_dims.norm(p=2, dim=1).cuda(gpu0)
 
-            temp = torch.sqrt((n.flatten() - torch.zeros(n.flatten().shape).cuda(gpu0)) ** 2)
+            temp = torch.dist(n.flatten(), torch.zeros(n.flatten().shape).cuda(gpu0))
 
             avg += temp
             print("L2 norm of pic {0} = {1}".format(c, temp.shape))
