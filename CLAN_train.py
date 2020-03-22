@@ -326,7 +326,7 @@ def main():
     source_label = 0
     target_label = 1
 
-    for i_iter in range(38001, args.num_steps):
+    for i_iter in range(0, args.num_steps):
 
         optimizer.zero_grad()
         adjust_learning_rate(optimizer, i_iter)
