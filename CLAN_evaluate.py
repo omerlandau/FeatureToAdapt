@@ -124,7 +124,8 @@ def main():
 
             output_col.save('%s/%s_color.png' % (args.save, name.split('.')[0]))
 
-        print("average L2 norm = {1}".format(avg/c))
+        avg = avg/c
+        print("average L2 norm = {0}".format(avg))
 
 
 if __name__ == '__main__':
