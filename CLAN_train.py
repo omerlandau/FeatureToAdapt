@@ -33,7 +33,7 @@ MOMENTUM = 0.9
 NUM_CLASSES = 19
 RESTORE_FROM = './model/DeepLab_resnet_pretrained_init-f81d91e8.pth'
 #RESTORE_FROM = './snapshots/GTA2Cityscapes_CVPR_Syn0820_Wg00005weight005_dampingx2/GTA5_36000.pth' #For retrain
-#RESTORE_FROM_D = './snapshots/GTA2Cityscapes_CVPR_Syn0820_Wg00005weight005_dampingx2/GTA5_36000_D.pth' #For retrain
+RESTORE_FROM_D = './snapshots/GTA2Cityscapes_CVPR_Syn0820_Wg00005weight005_dampingx2/GTA5_36000_D.pth' #For retrain
 
 SAVE_NUM_IMAGES = 2
 SAVE_PRED_EVERY = 2000
