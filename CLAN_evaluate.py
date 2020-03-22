@@ -109,7 +109,7 @@ def main():
             temp = torch.dist(n.flatten(), torch.zeros(n.flatten().shape).cuda(gpu0))
 
             avg += temp
-            print("L2 norm of pic {0} = {1}".format(c, temp.shape))
+            print("L2 norm of pic {0} = {1}".format(c, temp))
 
             output = interp(output1 + output2).cpu().data[0].numpy()
             
