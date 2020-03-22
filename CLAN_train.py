@@ -31,9 +31,9 @@ IGNORE_LABEL = 255
 
 MOMENTUM = 0.9
 NUM_CLASSES = 19
-RESTORE_FROM = './model/DeepLab_resnet_pretrained_init-f81d91e8.pth'
+RESTORE_FROM = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss/GTA5_40000.pth'
 #RESTORE_FROM = './snapshots/GTA2Cityscapes_CVPR_Syn0820_Wg00005weight005_dampingx2/GTA5_36000.pth' #For retrain
-RESTORE_FROM_D = './snapshots/GTA2Cityscapes_CVPR_Syn0820_Wg00005weight005_dampingx2/GTA5_36000_D.pth' #For retrain
+RESTORE_FROM_D = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss/GTA5_40000_D.pth' #For retrain
 
 SAVE_NUM_IMAGES = 2
 SAVE_PRED_EVERY = 2000
@@ -142,7 +142,7 @@ def get_arguments():
                         help="Where to save snapshots of the model.")
     parser.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY,
                         help="Regularisation parameter for L2-loss.")
-    parser.add_argument("--gpu", type=int, default=0,
+    parser.add_argument("--gpu", type=int, default=5,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose adaptation set.")
@@ -249,7 +249,7 @@ def main():
     if args.restore_from[:4] == 'http':
         saved_state_dict = model_zoo.load_url(args.restore_from)
     else:
-        saved_state_dict = torch.load(args.restore_from)
+        saved_state_dict = torch.load(args.restore_from, map_location="cuda:{0}".format(args.gpu))
     new_params = model.state_dict().copy()
     for i in saved_state_dict:
         i_parts = i.split('.')
@@ -272,8 +272,8 @@ def main():
     model_D = FCDiscriminator(num_classes=args.num_classes)
 # =============================================================================
 #    #for retrain     
-#    saved_state_dict_D = torch.load(RESTORE_FROM_D)
-#    model_D.load_state_dict(saved_state_dict_D)
+    saved_state_dict_D = torch.load(RESTORE_FROM_D, map_location="cuda:{0}".format(args.gpu))
+    model_D.load_state_dict(saved_state_dict_D)
 # =============================================================================
     
     model_D.train()
