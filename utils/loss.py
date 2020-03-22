@@ -65,7 +65,7 @@ class CrossEntropy2d(nn.Module):
         sm = nn.Softmax2d()
         
         P = sm(predict)
-        print(P)
+        print(P.shape)
         P = torch.clamp(P, min = 1e-9, max = 1-(1e-9))
         
         target_mask = (target >= 0) * (target != self.ignore_label)

@@ -196,8 +196,6 @@ def loss_calc(pred, label, gpu):
     # label shape h x w x 1 x batch_size  -> batch_size x 1 x h x w
     label = Variable(label.long()).cuda(gpu)
     criterion = CrossEntropy2d(NUM_CLASSES).cuda(gpu)
-    print(label)
-    print(pred)
     return criterion(pred, label)
 
 
