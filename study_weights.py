@@ -14,7 +14,7 @@ print(torch.cuda)
 
 model = Res_Deeplab(num_classes=19)
 
-saved_state_dict = torch.load(model_path, torch.cuda(2))
+saved_state_dict = torch.load(model_path, map_location="cuda:2")
 model.load_state_dict(saved_state_dict)
 
 print("Model's state_dict:")
