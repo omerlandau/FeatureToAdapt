@@ -183,7 +183,7 @@ def get_L2norm_loss_self_driven(x):
 
     radius = x.norm(p=2, dim=1).detach()
     assert radius.requires_grad == False
-    radius = radius + 0.2
+    radius = radius + 0.12
     n = x.norm(p=2, dim=1)
     l = ((n - radius) ** 2).mean()
     return l
