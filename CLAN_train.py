@@ -31,9 +31,10 @@ IGNORE_LABEL = 255
 
 MOMENTUM = 0.9
 NUM_CLASSES = 19
-RESTORE_FROM = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss/GTA5_38000.pth'
+RESTORE_FROM = './model/DeepLab_resnet_pretrained_init-f81d91e8.pth'
+#RESTORE_FROM = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss/GTA5_38000.pth'
 #RESTORE_FROM = './snapshots/GTA2Cityscapes_CVPR_Syn0820_Wg00005weight005_dampingx2/GTA5_36000.pth' #For retrain
-RESTORE_FROM_D = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss/GTA5_38000_D.pth' #For retrain
+#RESTORE_FROM_D = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss/GTA5_38000_D.pth' #For retrain
 
 SAVE_NUM_IMAGES = 2
 SAVE_PRED_EVERY = 2000
@@ -272,8 +273,8 @@ def main():
     model_D = FCDiscriminator(num_classes=args.num_classes)
 # =============================================================================
 #    #for retrain     
-    saved_state_dict_D = torch.load(RESTORE_FROM_D, map_location="cuda:{0}".format(args.gpu))
-    model_D.load_state_dict(saved_state_dict_D)
+#    saved_state_dict_D = torch.load(RESTORE_FROM_D, map_location="cuda:{0}".format(args.gpu))
+#    model_D.load_state_dict(saved_state_dict_D)
 # =============================================================================
     
     model_D.train()
