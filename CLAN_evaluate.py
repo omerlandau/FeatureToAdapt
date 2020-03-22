@@ -104,7 +104,9 @@ def main():
 
             c+=1
 
-            temp = norm_dims.norm(p=2, dim=1)
+            n = norm_dims.norm(p=2, dim=1)
+
+            temp = (n - np.zeros(n.shape)) ** 2
 
             avg += temp
             print("L2 norm of pic {0} = {1}".format(c, temp))
