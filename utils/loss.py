@@ -27,8 +27,8 @@ class WeightedBCEWithLogitsLoss(nn.Module):
             raise ValueError("Target size ({}) must be the same as input size ({})".format(target.size(), input.size()))
 
         max_val = (-input).clamp(min=0)
-        print(max_val.shape)
-        print(max_val)
+        print('max_val shape = {0}'.format(max_val.shape))
+        print('max_val = {0}'.format(max_val))
         loss = input - input * target + max_val + ((-max_val).exp() + (-input - max_val).exp()).log()
                 
         if weight is not None:
