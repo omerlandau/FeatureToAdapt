@@ -96,7 +96,7 @@ def main():
     
         model = Res_Deeplab(num_classes=args.num_classes)
     
-        saved_state_dict = torch.load(model_path)
+        saved_state_dict = torch.load(model_path, map_location="cuda:{0}".format(args.gpu))
         model.load_state_dict(saved_state_dict)
         
         model.eval()
