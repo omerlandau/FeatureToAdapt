@@ -385,7 +385,7 @@ def main():
 
         
         #Adaptive Adversarial Loss
-        if(i_iter > PREHEAT_STEPS):
+        if(i_iter > 0):
             loss_adv = weighted_bce_loss(D_out, 
                                     Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(
                                         args.gpu), weight_map, Epsilon, Lambda_local)
