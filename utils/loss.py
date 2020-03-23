@@ -106,6 +106,10 @@ class IW_MaxSquareloss(nn.Module):
         :return: maximum squares loss with image-wise weighting factor
         """
         # prob -= 0.5
+        sm = nn.Softmax2d()
+        P = sm(pred)
+        P = torch.clamp(P, min=1e-9, max=1 - (1e-9))
+        prob = P
         N, C, H, W = prob.size()
         mask = (prob != self.ignore_index)
         maxpred, argpred = torch.max(prob, 1)
