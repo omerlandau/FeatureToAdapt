@@ -56,7 +56,7 @@ NUM_STEPS = 100000
 NUM_STEPS_STOP = 100000  # Use damping instead of early stopping
 PREHEAT_STEPS = int(NUM_STEPS_STOP/20)
 POWER = 0.9
-
+RANDOM_SEED = 999
 SOURCE = 'GTA5'
 TARGET = 'cityscapes'
 SET = 'train'
