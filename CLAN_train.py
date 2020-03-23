@@ -21,6 +21,13 @@ from dataset.gta5_dataset import GTA5DataSet
 #from dataset.synthia_dataset import SYNTHIADataSet
 from dataset.cityscapes_dataset import cityscapesDataSet
 
+torch.manual_seed(999)
+torch.cuda.manual_seed_all(999)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+np.random.seed(999)
+
+
 IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
 
 MODEL = 'ResNet'
@@ -32,10 +39,10 @@ IGNORE_LABEL = 255
 
 MOMENTUM = 0.9
 NUM_CLASSES = 19
-#RESTORE_FROM = './model/DeepLab_resnet_pretrained_init-f81d91e8.pth'
-RESTORE_FROM = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000.pth'
+RESTORE_FROM = './model/DeepLab_resnet_pretrained_init-f81d91e8.pth'
+#RESTORE_FROM = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000.pth'
 #RESTORE_FROM = './snapshots/GTA2Cityscapes_CVPR_Syn0820_Wg00005weight005_dampingx2/GTA5_36000.pth' #For retrain
-RESTORE_FROM_D = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000_D.pth' #For retrain
+#RESTORE_FROM_D = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000_D.pth' #For retrain
 
 SAVE_NUM_IMAGES = 2
 SAVE_PRED_EVERY = 2000
@@ -49,7 +56,6 @@ NUM_STEPS = 100000
 NUM_STEPS_STOP = 100000  # Use damping instead of early stopping
 PREHEAT_STEPS = int(NUM_STEPS_STOP/20)
 POWER = 0.9
-RANDOM_SEED = 1234
 
 SOURCE = 'GTA5'
 TARGET = 'cityscapes'
@@ -274,8 +280,8 @@ def main():
     model_D = FCDiscriminator(num_classes=args.num_classes)
 # =============================================================================
 #    #for retrain     
-    saved_state_dict_D = torch.load(RESTORE_FROM_D, map_location="cuda:{0}".format(args.gpu))
-    model_D.load_state_dict(saved_state_dict_D)
+#    saved_state_dict_D = torch.load(RESTORE_FROM_D, map_location="cuda:{0}".format(args.gpu))
+#    model_D.load_state_dict(saved_state_dict_D)
 # =============================================================================
     
     model_D.train()
@@ -329,7 +335,7 @@ def main():
     source_label = 0
     target_label = 1
 
-    for i_iter in range(42000, args.num_steps):
+    for i_iter in range(0, args.num_steps):
 
         optimizer.zero_grad()
         adjust_learning_rate(optimizer, i_iter)
@@ -357,12 +363,12 @@ def main():
         pred_source2 = interp_source(pred_source2)
 
 
-        #loss_norm_src = 0.00012*get_L2norm_loss_self_driven(feature_ext_src)*damping_norm
+        loss_norm_src = 0.00015*get_L2norm_loss_self_driven(feature_ext_src)*damping_norm
 
         #feature generalization loss
 
 
-        #loss_norm_src.backward(retain_graph=True)
+        loss_norm_src.backward(retain_graph=True)
 
         #Segmentation Loss
         loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu)) #0.3*loss_calc(pred_source1 + pred_source2, labels_s, args.gpu)
@@ -378,11 +384,11 @@ def main():
         pred_target1 = interp_target(pred_target1)
         pred_target2 = interp_target(pred_target2)
 
-        #loss_norm_target = 0.00012*get_L2norm_loss_self_driven(feature_ext_target)*damping_norm
+        loss_norm_target = 0.00015*get_L2norm_loss_self_driven(feature_ext_target)*damping_norm
 
-        #loss_norm_target.backward(retain_graph=True)
+        loss_norm_target.backward(retain_graph=True)
 
-        loss_iw = iw_mse(pred_target1+pred_target2,0)
+        #loss_iw = iw_mse(pred_target1+pred_target2,0)
 
         print(loss_iw)
 
@@ -400,7 +406,7 @@ def main():
             loss_adv = bce_loss(D_out,
                           Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(args.gpu))
 
-        loss_adv = loss_adv * Lambda_adv * damping + 0.001*loss_iw*damping
+        loss_adv = loss_adv * Lambda_adv * damping #+ 0.001*loss_iw*damping
         loss_adv.backward()
 
 
