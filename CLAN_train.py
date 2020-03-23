@@ -381,7 +381,7 @@ def main():
 
         loss_norm_target.backward(retain_graph=True)
 
-        loss_iw = iw_mse(pred_target1+pred_target2,0)
+        #loss_iw = iw_mse(pred_target1+pred_target2,0)
 
         print(loss_iw)
 
@@ -399,7 +399,7 @@ def main():
             loss_adv = bce_loss(D_out,
                           Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(args.gpu))
 
-        loss_adv = loss_adv * Lambda_adv * damping + 0.00001*loss_iw*damping
+        loss_adv = loss_adv * Lambda_adv * damping #+ 0.00001*loss_iw*damping
         loss_adv.backward()
 
 
