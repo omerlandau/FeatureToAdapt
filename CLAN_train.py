@@ -399,7 +399,7 @@ def main():
             loss_adv = bce_loss(D_out,
                           Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(args.gpu))
 
-        loss_adv = loss_adv * Lambda_adv * damping + 0.0001*loss_iw*damping
+        loss_adv = loss_adv * Lambda_adv * damping + 0.00001*loss_iw*damping
         loss_adv.backward()
 
 
