@@ -15,6 +15,7 @@ from model.CLAN_D import FCDiscriminator
 
 from utils.loss import CrossEntropy2d
 from utils.loss import WeightedBCEWithLogitsLoss
+from utils.loss import IW_MaxSquareloss
 
 from dataset.gta5_dataset import GTA5DataSet
 #from dataset.synthia_dataset import SYNTHIADataSet
@@ -319,6 +320,8 @@ def main():
     bce_loss = torch.nn.BCEWithLogitsLoss()
     weighted_bce_loss = WeightedBCEWithLogitsLoss()
 
+    iw_mse = IW_MaxSquareloss()
+
     interp_source = nn.Upsample(size=(input_size_source[1], input_size_source[0]), mode='bilinear', align_corners=True)
     interp_target = nn.Upsample(size=(input_size_target[1], input_size_target[0]), mode='bilinear', align_corners=True)
     
@@ -377,6 +380,12 @@ def main():
         loss_norm_target = 0.00012*get_L2norm_loss_self_driven(feature_ext_target)*damping_norm
 
         loss_norm_target.backward(retain_graph=True)
+
+        loss_iw = iw_mse(pred_target1+pred_target2, F.softmax(pred_target1, dim = 1) + F.softmax(pred_target2, dim = 1))
+
+        print(loss_iw)
+
+        exit()
 
 
         weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
