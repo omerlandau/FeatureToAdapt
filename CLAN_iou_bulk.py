@@ -66,7 +66,7 @@ def main(gt_dir, pred_dir, devkit_dir):
 if __name__ == "__main__":
     with open("mIoU_result/GTA2Cityscapes_norm_00012_Damping_power18_012norm_mse_0001_iw.csv","a+",newline="") as datacsv:
         csvwriter = csv.writer(datacsv,dialect = ("excel"))
-        for i in range(1, 20):
+        for i in range(1, 11):
             gt_dir = './data/CitySpaces/gtFine/val'
             pred_dir = './result/GTA2Cityscapes_norm_00012_Damping_power18_012norm_mse_0001_iw_{0:d}'.format(i*2000)
             devkit_dir = './dataset/cityscapes_list'
