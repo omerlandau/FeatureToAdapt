@@ -390,7 +390,7 @@ def main():
 
         #loss_iw = iw_mse(pred_target1+pred_target2,0)
 
-        print(loss_iw)
+        #print(loss_iw)
 
         weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
         
