@@ -383,11 +383,6 @@ def main():
 
         loss_iw = iw_mse(pred_target1+pred_target2,0)
 
-        print(loss_iw)
-
-        exit()
-
-
         weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
         
         D_out = interp_target(model_D(F.softmax(pred_target1 + pred_target2, dim = 1)))
@@ -402,7 +397,7 @@ def main():
             loss_adv = bce_loss(D_out,
                           Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(args.gpu))
 
-        loss_adv = loss_adv * Lambda_adv * damping
+        loss_adv = loss_adv * Lambda_adv * damping + 0.002*loss_iw
         loss_adv.backward()
 
 
