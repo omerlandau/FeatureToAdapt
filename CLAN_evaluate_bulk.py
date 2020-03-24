@@ -72,7 +72,7 @@ def get_arguments():
                         help="Number of classes to predict (including background).")
     parser.add_argument("--restore-from", type=str, default=RESTORE_FROM,
                         help="Where restore model parameters from.")
-    parser.add_argument("--gpu", type=int, default=1,
+    parser.add_argument("--gpu", type=int, default=0,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose evaluation set.")
@@ -84,9 +84,9 @@ def get_arguments():
 def main():
     """Create the model and start the evaluation process."""
 
-    for i in range(1, 10):
-        model_path = './snapshots/GTA2Cityscapes_norm_00012_Damping_power18_012norm_mse_0001_iw/GTA5_{0:d}.pth'.format(i*2000)
-        save_path = './result/GTA2Cityscapes_norm_00012_Damping_power18_012norm_mse_0001_iw_{0:d}'.format(i*2000)
+    for i in range(21, 42):
+        model_path = './snapshots/GTA2Cityscapes_restore_from_40_iw_no_norm/GTA5_{0:d}.pth'.format(i*2000)
+        save_path = './result/GTA2Cityscapes_restore_from_40_iw_no_norm_{0:d}'.format(i*2000)
         args = get_arguments()
     
         gpu0 = args.gpu
