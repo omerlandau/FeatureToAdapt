@@ -27,12 +27,6 @@ class WeightedBCEWithLogitsLoss(nn.Module):
             raise ValueError("Target size ({}) must be the same as input size ({})".format(target.size(), input.size()))
 
         max_val = (-input).clamp(min=0)
-        print('input shape = {0}'.format(input.shape))
-        print('input = {0}'.format(input))
-        print('target shape = {0}'.format(target.shape))
-        print('target = {0}'.format(target))
-        print('max_val shape = {0}'.format(max_val.shape))
-        print('max_val = {0}'.format(max_val))
         loss = input - input * target + max_val + ((-max_val).exp() + (-input - max_val).exp()).log()
                 
         if weight is not None:
@@ -69,16 +63,13 @@ class CrossEntropy2d(nn.Module):
     def forward(self, predict, target):
         N, C, H, W = predict.size()
         sm = nn.Softmax2d()
-        print(target)
         P = sm(predict)
-        print(P.shape)
         P = torch.clamp(P, min = 1e-9, max = 1-(1e-9))
         
         target_mask = (target >= 0) * (target != self.ignore_label)
         target = target[target_mask].view(1, -1)
         predict = P[target_mask.view(N, 1, H, W).repeat(1, C, 1, 1)].view(C, -1)
         probs = torch.gather(predict, dim = 0, index = target)
-        print(probs)
         log_p = probs.log()
         batch_loss = -(torch.pow((1-probs), self.gamma))*log_p 
 
