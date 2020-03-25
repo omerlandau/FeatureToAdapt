@@ -346,7 +346,8 @@ def main():
         damping = (1 - i_iter/NUM_STEPS)
         damping_norm = (1 - i_iter/NUM_STEPS)**1.8
 
-        print(damping_norm)
+        print("<--------> damping norm = {0} <-------->".format(damping_norm))
+
 
         #======================================================================================
         # train G
