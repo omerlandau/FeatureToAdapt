@@ -39,7 +39,7 @@ IGNORE_LABEL = 255
 
 MOMENTUM = 0.9
 NUM_CLASSES = 19
-RESTORE_FROM = './model/DeepLab_resnet_pretrained_init-f81d91e8.pth'
+RESTORE_FROM = '/a/home/cc/students/cs/omerlandau1/foromerlandau/MaxSquareLoss_Norm/log/gta5_pretrain_multi/gta5best.pth'
 #RESTORE_FROM = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000.pth'
 #RESTORE_FROM = './snapshots/GTA2Cityscapes_CVPR_Syn0820_Wg00005weight005_dampingx2/GTA5_36000.pth' #For retrain
 #RESTORE_FROM_D = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000_D.pth' #For retrain
@@ -344,9 +344,7 @@ def main():
         adjust_learning_rate_D(optimizer_D, i_iter)
         
         damping = (1 - i_iter/NUM_STEPS)
-        damping_norm = (1 - i_iter/NUM_STEPS)**1.8
-
-        print("<--------> damping norm = {0} <-------->".format(damping_norm))
+        damping_norm = (1 - i_iter/NUM_STEPS)
 
 
         #======================================================================================
@@ -366,7 +364,7 @@ def main():
         pred_source2 = interp_source(pred_source2)
 
 
-        loss_norm_src = 0.00015*get_L2norm_loss_self_driven(feature_ext_src)*damping_norm
+        loss_norm_src = 0.0003*get_L2norm_loss_self_driven(feature_ext_src)*damping_norm
 
         #feature generalization loss
 
@@ -387,7 +385,7 @@ def main():
         pred_target1 = interp_target(pred_target1)
         pred_target2 = interp_target(pred_target2)
 
-        loss_norm_target = 0.00015*get_L2norm_loss_self_driven(feature_ext_target)*damping_norm
+        loss_norm_target = 0.0003*get_L2norm_loss_self_driven(feature_ext_target)*damping_norm
 
         loss_norm_target.backward(retain_graph=True)
 
