@@ -150,7 +150,7 @@ def get_arguments():
                         help="Where to save snapshots of the model.")
     parser.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY,
                         help="Regularisation parameter for L2-loss.")
-    parser.add_argument("--gpu", type=int, default=3,
+    parser.add_argument("--gpu", type=int, default=2,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose adaptation set.")
@@ -345,6 +345,8 @@ def main():
         
         damping = (1 - i_iter/NUM_STEPS)
         damping_norm = (1 - i_iter/NUM_STEPS)**1.8
+
+        print(damping_norm)
 
         #======================================================================================
         # train G
