@@ -84,7 +84,7 @@ def get_arguments():
 def main():
     """Create the model and start the evaluation process."""
 
-    for i in range(22, 27):
+    for i in range(22, 29):
         model_path = './snapshots/GTA2Cityscapes_norm_layer3_00015_18power_damp/GTA5_{0:d}.pth'.format(i*2000)
         save_path = './result/GTA2Cityscapes_norm_layer3_00015_18power_damp_{0:d}'.format(i*2000)
         args = get_arguments()
