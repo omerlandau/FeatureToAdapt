@@ -495,12 +495,12 @@ def main():
 
         print('exp = {}'.format(args.snapshot_dir))
         print(
-        'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}'.format(
-            i_iter, args.num_steps, loss_seg))#, loss_adv, loss_weight, loss_D_s, loss_D_t))
+        'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}, loss_iw = {3:.4f}'.format(
+            i_iter, args.num_steps, loss_seg, loss_iw))#, loss_adv, loss_weight, loss_D_s, loss_D_t))
 
         f_loss = open(osp.join(args.snapshot_dir,'loss.txt'), 'a')
-        f_loss.write('{0:.4f}\n'.format(
-            loss_seg))#, loss_adv, loss_weight, loss_D_s, loss_D_t))
+        f_loss.write('{0:.4f} loss_iw = {1:.4f}\n'.format(
+            loss_seg, loss_iw))#, loss_adv, loss_weight, loss_D_s, loss_D_t))
         f_loss.close()
         
         if i_iter >= args.num_steps_stop - 1:
