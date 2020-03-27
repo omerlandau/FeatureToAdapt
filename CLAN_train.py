@@ -391,6 +391,8 @@ def main():
 
         loss_norm_target.backward()#retain_graph=True)
 
+        optimizer.step()
+
         #loss_iw = iw_mse(pred_target1+pred_target2,0)
 
         #print(loss_iw)
@@ -484,7 +486,6 @@ def main():
         optimizer.step()
         optimizer_D.step()
         """
-        optimizer.step()
 
         print('exp = {}'.format(args.snapshot_dir))
         print(
