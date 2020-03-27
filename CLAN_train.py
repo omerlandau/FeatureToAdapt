@@ -277,15 +277,15 @@ def main():
     cudnn.benchmark = True
 
     # Init D
-    model_D = FCDiscriminator(num_classes=args.num_classes)
+    #model_D = FCDiscriminator(num_classes=args.num_classes)
 # =============================================================================
 #    #for retrain     
 #    saved_state_dict_D = torch.load(RESTORE_FROM_D, map_location="cuda:{0}".format(args.gpu))
 #    model_D.load_state_dict(saved_state_dict_D)
 # =============================================================================
     
-    model_D.train()
-    model_D.cuda(args.gpu)
+    #model_D.train()
+    #model_D.cuda(args.gpu)
 
     if not os.path.exists(args.snapshot_dir):
         os.makedirs(args.snapshot_dir)
@@ -320,8 +320,8 @@ def main():
                           lr=args.learning_rate, momentum=args.momentum, weight_decay=args.weight_decay)
     optimizer.zero_grad()
 
-    optimizer_D = optim.Adam(model_D.parameters(), lr=args.learning_rate_D, betas=(0.9, 0.99))
-    optimizer_D.zero_grad()
+    #optimizer_D = optim.Adam(model_D.parameters(), lr=args.learning_rate_D, betas=(0.9, 0.99))
+    #optimizer_D.zero_grad()
 
     bce_loss = torch.nn.BCEWithLogitsLoss()
     weighted_bce_loss = WeightedBCEWithLogitsLoss()
@@ -387,12 +387,12 @@ def main():
 
         loss_norm_target = 0.00015*get_L2norm_loss_self_driven(feature_ext_target)*damping_norm
 
-        loss_norm_target.backward(retain_graph=True)
+        loss_norm_target.backward()#retain_graph=True)
 
         #loss_iw = iw_mse(pred_target1+pred_target2,0)
 
         #print(loss_iw)
-
+"""
         weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
         
         D_out = interp_target(model_D(F.softmax(pred_target1 + pred_target2, dim = 1)))
@@ -481,27 +481,27 @@ def main():
 
         optimizer.step()
         optimizer_D.step()
-
+"""
         print('exp = {}'.format(args.snapshot_dir))
         print(
-        'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f} loss_adv = {3:.4f}, loss_weight = {4:.4f}, loss_D_s = {5:.4f} loss_D_t = {6:.4f}'.format(
-            i_iter, args.num_steps, loss_seg, loss_adv, loss_weight, loss_D_s, loss_D_t))
+        'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}'.format(
+            i_iter, args.num_steps, loss_seg))#, loss_adv, loss_weight, loss_D_s, loss_D_t))
 
         f_loss = open(osp.join(args.snapshot_dir,'loss.txt'), 'a')
-        f_loss.write('{0:.4f} {1:.4f} {2:.4f} {3:.4f} {4:.4f}\n'.format(
-            loss_seg, loss_adv, loss_weight, loss_D_s, loss_D_t))
+        f_loss.write('{0:.4f}\n'.format(
+            loss_seg))#, loss_adv, loss_weight, loss_D_s, loss_D_t))
         f_loss.close()
         
         if i_iter >= args.num_steps_stop - 1:
             print('save model ...')
             torch.save(model.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(args.num_steps) + '.pth'))
-            torch.save(model_D.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(args.num_steps) + '_D.pth'))
-            break
+            #torch.save(model_D.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(args.num_steps) + '_D.pth'))
+            #break
 
         if i_iter % args.save_pred_every == 0 and i_iter != 0:
             print('taking snapshot ...')
             torch.save(model.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(i_iter) + '.pth'))
-            torch.save(model_D.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(i_iter) + '_D.pth'))
+            #torch.save(model_D.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(i_iter) + '_D.pth'))
 
 if __name__ == '__main__':
     main()
