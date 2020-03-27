@@ -340,11 +340,11 @@ def main():
         optimizer.zero_grad()
         adjust_learning_rate(optimizer, i_iter)
 
-        optimizer_D.zero_grad()
-        adjust_learning_rate_D(optimizer_D, i_iter)
+        #optimizer_D.zero_grad()
+        #adjust_learning_rate_D(optimizer_D, i_iter)
         
         damping = (1 - i_iter/NUM_STEPS)
-        damping_norm = (1 - i_iter/NUM_STEPS)
+        damping_norm = (1 - (1.5*i_iter)/NUM_STEPS)
 
 
         #======================================================================================
