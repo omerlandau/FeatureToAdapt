@@ -484,6 +484,7 @@ def main():
         optimizer.step()
         optimizer_D.step()
         """
+        optimizer.step()
 
         print('exp = {}'.format(args.snapshot_dir))
         print(
