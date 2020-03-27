@@ -381,9 +381,11 @@ def main():
         images_t, _, _, _ = batch
         images_t = Variable(images_t).cuda(args.gpu)
 
-        pred_target1, pred_target2, feature_ext_target = model(images_t)
-        pred_target1 = interp_target(pred_target1)
-        pred_target2 = interp_target(pred_target2)
+        #pred_target1, pred_target2, feature_ext_target = model(images_t)
+        _, _, feature_ext_target = model(images_t)
+
+        #pred_target1 = interp_target(pred_target1)
+        #pred_target2 = interp_target(pred_target2)
 
         loss_norm_target = 0.00015*get_L2norm_loss_self_driven(feature_ext_target)*damping_norm
 
