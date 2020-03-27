@@ -352,8 +352,8 @@ def main():
         #======================================================================================
 
         #Remove Grads in D
-        for param in model_D.parameters():
-            param.requires_grad = False
+        #for param in model_D.parameters():
+        #    param.requires_grad = False
 
         # Train with Source
         _, batch = next(trainloader_iter)
@@ -392,7 +392,7 @@ def main():
         #loss_iw = iw_mse(pred_target1+pred_target2,0)
 
         #print(loss_iw)
-"""
+        """
         weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
         
         D_out = interp_target(model_D(F.softmax(pred_target1 + pred_target2, dim = 1)))
@@ -481,7 +481,8 @@ def main():
 
         optimizer.step()
         optimizer_D.step()
-"""
+        """
+
         print('exp = {}'.format(args.snapshot_dir))
         print(
         'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}'.format(
