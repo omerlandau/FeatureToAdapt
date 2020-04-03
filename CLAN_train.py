@@ -351,7 +351,9 @@ def main():
         pred_target1 = interp_target(pred_target1)
         pred_target2 = interp_target(pred_target2)
         loss_norm_target = 0.00015 * get_L2norm_loss_self_driven(feature_ext_target) * damping_norm
-        loss_norm_target.backward()  # retain_graph=True)
+        loss_norm_target.backward(retain_graph=True)
+        min_entropy_loss = entropy_loss(pred_target1)*0.0001 + entropy_loss(pred_target2)*0.00001
+        min_entropy_loss.backward()
         # loss_iw = iw_mse(pred_target1+pred_target2,0)
         # print(loss_iw)
         """
@@ -433,11 +435,11 @@ def main():
 
         print('exp = {}'.format(args.snapshot_dir))
         print(
-            'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}'.format(
-                i_iter, args.num_steps, loss_seg))  # , loss_adv, loss_weight, loss_D_s, loss_D_t))
+            'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}, loss_norm_target = {3:.4f}, loss_norm_src = {4:.4f}, loss_ent = {5:.4f}'.format(
+                i_iter, args.num_steps, loss_seg, loss_norm_target, loss_norm_src,min_entropy_loss ))  # , loss_adv, loss_weight, loss_D_s, loss_D_t))
         f_loss = open(osp.join(args.snapshot_dir, 'loss.txt'), 'a')
-        f_loss.write('{0:.4f}\n'.format(
-            loss_seg))  # , loss_adv, loss_weight, loss_D_s, loss_D_t))
+        f_loss.write( 'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}, loss_norm_target = {3:.4f}, loss_norm_src = {4:.4f}, loss_ent = {5:.4f}\n'.format(
+                i_iter, args.num_steps, loss_seg, loss_norm_target, loss_norm_src,min_entropy_loss ))  # , loss_adv, loss_weight, loss_D_s, loss_D_t))
         f_loss.close()
 
         if i_iter >= args.num_steps_stop - 1:
