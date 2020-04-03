@@ -118,7 +118,7 @@ def main():
 
             output = np.asarray(norm_dims.cpu(), dtype=np.uint8)
 
-            output = output.reshape((output.shape[2],output.shape[3]))
+            output = output.reshape((output.shape[2]*output.shape[3], 2048))
     
             #output_col = colorize_mask(output)
             output = Image.fromarray(output)
