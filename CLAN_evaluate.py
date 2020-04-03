@@ -120,7 +120,7 @@ def main():
 
             output = output.reshape((output.shape[2]*output.shape[3], 2048))
     
-            #output_col = colorize_mask(output)
+            output_col = colorize_mask(output)
             output = Image.fromarray(output)
     
             name = name[0].split('/')[-1]
