@@ -57,7 +57,7 @@ def get_arguments():
                         help="Number of classes to predict (including background).")
     parser.add_argument("--restore-from", type=str, default=RESTORE_FROM,
                         help="Where restore model parameters from.")
-    parser.add_argument("--gpu", type=int, default=2,
+    parser.add_argument("--gpu", type=int, default=4,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose evaluation set.")
@@ -111,14 +111,10 @@ def main():
             avg += temp
             print("L2 norm of pic {0} = {1}".format(c, temp))
 
-            #output = interp(output1+output2).cpu().data[0].numpy()
+            output = interp(output1+output2).cpu().data[0].numpy()
             
-            #output = output.transpose(1,2,0)
-            #output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
-
-            output = np.asarray(norm_dims.cpu(), dtype=np.uint8)
-
-            output = output.reshape((output.shape[2]*output.shape[3], 2048))
+            output = output.transpose(1,2,0)
+            output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
     
             output_col = colorize_mask(output)
             output = Image.fromarray(output)
@@ -128,8 +124,8 @@ def main():
 
             output_col.save('%s/%s_color.png' % (args.save, name.split('.')[0]))
 
-        #avg = avg/c
-        #print("average L2 norm = {0}".format(avg))
+        avg = avg/c
+        print("average L2 norm = {0}".format(avg))
 
 
 if __name__ == '__main__':
