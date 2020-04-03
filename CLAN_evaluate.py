@@ -57,7 +57,7 @@ def get_arguments():
                         help="Number of classes to predict (including background).")
     parser.add_argument("--restore-from", type=str, default=RESTORE_FROM,
                         help="Where restore model parameters from.")
-    parser.add_argument("--gpu", type=int, default=4,
+    parser.add_argument("--gpu", type=int, default=2,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose evaluation set.")
@@ -102,21 +102,23 @@ def main():
             image, _, _, name = batch
             output1, output2, norm_dims = model(Variable(image).cuda(gpu0))
 
-            c+=1
+            #c+=1
 
-            n = norm_dims.norm(p=2, dim=1).cuda(gpu0)
+            #n = norm_dims.norm(p=2, dim=1).cuda(gpu0)
 
-            temp = torch.dist(n.flatten(), torch.zeros(n.flatten().shape).cuda(gpu0))
+            #temp = torch.dist(n.flatten(), torch.zeros(n.flatten().shape).cuda(gpu0))
 
-            avg += temp
-            print("L2 norm of pic {0} = {1}".format(c, temp))
+            #avg += temp
+            #print("L2 norm of pic {0} = {1}".format(c, temp))
 
-            output = interp(output1+output2).cpu().data[0].numpy()
+            #output = interp(output1+output2).cpu().data[0].numpy()
             
-            output = output.transpose(1,2,0)
-            output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
+            #output = output.transpose(1,2,0)
+            #output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
+
+            output = np.asarray(norm_dims, dtype=np.uint8)
     
-            output_col = colorize_mask(output)
+            #output_col = colorize_mask(output)
             output = Image.fromarray(output)
     
             name = name[0].split('/')[-1]
@@ -124,8 +126,8 @@ def main():
 
             output_col.save('%s/%s_color.png' % (args.save, name.split('.')[0]))
 
-        avg = avg/c
-        print("average L2 norm = {0}".format(avg))
+        #avg = avg/c
+        #print("average L2 norm = {0}".format(avg))
 
 
 if __name__ == '__main__':
