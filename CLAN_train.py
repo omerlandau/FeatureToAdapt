@@ -331,14 +331,14 @@ def main():
         _, batch = next(trainloader_iter)
         images_s, labels_s, _, _, _ = batch
         images_s = Variable(images_s).cuda(args.gpu)
-        pred_source1, _, feature_ext_src = model(images_s)
+        pred_source1, pred_source2, feature_ext_src = model(images_s)
         pred_source1 = interp_source(pred_source1)
-        #pred_source2 = interp_source(pred_source2)
+        pred_source2 = interp_source(pred_source2)
         loss_norm_src = 0.00015 * get_L2norm_loss_self_driven(feature_ext_src) * damping_norm
         # feature generalization loss
         loss_norm_src.backward(retain_graph=True)
         # Segmentation Loss
-        loss_seg = (loss_calc(pred_source1, labels_s, args.gpu)) #+ loss_calc(pred_source2, labels_s, args.gpu))
+        loss_seg = (loss_calc(pred_source1, labels_s, args.gpu)) + (0.0001*loss_calc(pred_source2, labels_s, args.gpu))
                     #  0.3*loss_calc(pred_source1 + pred_source2, labels_s, args.gpu)
         # loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
         loss_seg.backward()
@@ -346,14 +346,14 @@ def main():
         _, batch = next(targetloader_iter)
         images_t, _, _, _ = batch
         images_t = Variable(images_t).cuda(args.gpu)
-        #pred_target1, pred_target2, feature_ext_target = model(images_t)
-        _, _, feature_ext_target = model(images_t)
+        pred_target1, pred_target2, feature_ext_target = model(images_t)
+        #_, _, feature_ext_target = model(images_t)
         #pred_target1 = interp_target(pred_target1)
         #pred_target2 = interp_target(pred_target2)
         loss_norm_target = 0.00015 * get_L2norm_loss_self_driven(feature_ext_target) * damping_norm
-        loss_norm_target.backward()#retain_graph=True)
-        #min_entropy_loss = entropy_loss(pred_target1)*0.0001 + entropy_loss(pred_target2)*0.00001
-        #min_entropy_loss.backward()
+        loss_norm_target.backward(retain_graph=True)
+        min_entropy_loss = (entropy_loss(pred_target1)*0.0001 + entropy_loss(pred_target2)*0.00001)*damping
+        min_entropy_loss.backward()
         # loss_iw = iw_mse(pred_target1+pred_target2,0)
         # print(loss_iw)
 
