@@ -138,7 +138,7 @@ def get_arguments():
                         help="Where to save snapshots of the model.")
     parser.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY,
                         help="Regularisation parameter for L2-loss.")
-    parser.add_argument("--gpu", type=int, default=3,
+    parser.add_argument("--gpu", type=int, default=2,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose adaptation set.")
@@ -350,11 +350,11 @@ def main():
         #_, _, feature_ext_target = model(images_t)
         pred_target1 = interp_target(pred_target1)
         pred_target2 = interp_target(pred_target2)
-        pred_prob_trg_aux = F.softmax(pred_target2)
-        pred_prob_trg_main = F.softmax(pred_target1)
+        pred_target2 = F.softmax(pred_target2)
+        pred_target1 = F.softmax(pred_target1)
         loss_norm_target = 0.00015 * get_L2norm_loss_self_driven(feature_ext_target) * damping_norm
         loss_norm_target.backward(retain_graph=True)
-        min_entropy_loss = (entropy_loss(pred_prob_trg_main)*0.0001 + entropy_loss(pred_prob_trg_aux)*0.00001)*damping
+        min_entropy_loss = (entropy_loss(pred_target1)*0.0001 + entropy_loss(pred_target2)*0.00001)*damping
         min_entropy_loss.backward()
         # loss_iw = iw_mse(pred_target1+pred_target2,0)
         # print(loss_iw)
