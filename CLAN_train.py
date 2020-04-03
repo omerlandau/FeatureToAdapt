@@ -173,6 +173,16 @@ def discrepancy_slice_wasserstein(p1, p2):
     wdist = torch.mean((p1 - p2) ** 2)
     return torch.mean(wdist)
 
+def entropy_loss(v):
+    """
+        Entropy loss for probabilistic prediction vectors
+        input: batch_size x channels x h x w
+        output: batch_size x 1 x h x w
+    """
+    assert v.dim() == 4
+    n, c, h, w = v.size()
+    return -torch.sum(torch.mul(v, torch.log2(v + 1e-30))) / (n * h * w * np.log2(c))
+
 
 def get_L2norm_loss_self_driven(x):
     radius = x.norm(p=2, dim=1).detach()
@@ -336,10 +346,10 @@ def main():
         _, batch = next(targetloader_iter)
         images_t, _, _, _ = batch
         images_t = Variable(images_t).cuda(args.gpu)
-        # pred_target1, pred_target2, feature_ext_target = model(images_t)
-        _, _, feature_ext_target = model(images_t)
-        # pred_target1 = interp_target(pred_target1)
-        # pred_target2 = interp_target(pred_target2)
+        pred_target1, pred_target2, feature_ext_target = model(images_t)
+        #_, _, feature_ext_target = model(images_t)
+        pred_target1 = interp_target(pred_target1)
+        pred_target2 = interp_target(pred_target2)
         loss_norm_target = 0.00015 * get_L2norm_loss_self_driven(feature_ext_target) * damping_norm
         loss_norm_target.backward()  # retain_graph=True)
         # loss_iw = iw_mse(pred_target1+pred_target2,0)
