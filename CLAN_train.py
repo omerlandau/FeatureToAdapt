@@ -354,7 +354,7 @@ def main():
         pred_target1 = F.softmax(pred_target1, dim=1)
         loss_norm_target = 0.00015 * get_L2norm_loss_self_driven(feature_ext_target) * damping_norm
         loss_norm_target.backward(retain_graph=True)
-        min_entropy_loss = (entropy_loss(pred_target1)*0.0002 + entropy_loss(pred_target2)*0.00001)*damping
+        min_entropy_loss = (entropy_loss(pred_target1)*0.00015 + entropy_loss(pred_target2)*0.00001)*damping
         min_entropy_loss.backward()
         # loss_iw = iw_mse(pred_target1+pred_target2,0)
         # print(loss_iw)
