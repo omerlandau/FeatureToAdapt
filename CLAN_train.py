@@ -332,11 +332,11 @@ def main():
         images_s, labels_s, _, _, _ = batch
         images_s = Variable(images_s).cuda(args.gpu)
         pred_source1, pred_source2, feature_ext_src = model(images_s)
-        pred_source1 = interp_source(pred_source1)
-        pred_source2 = interp_source(pred_source2)
         loss_norm_src = 0.00015 * get_L2norm_loss_self_driven(feature_ext_src) * damping_norm
         # feature generalization loss
         loss_norm_src.backward(retain_graph=True)
+        pred_source1 = interp_source(pred_source1)
+        pred_source2 = interp_source(pred_source2)
         # Segmentation Loss
         loss_seg = (loss_calc(pred_source1, labels_s, args.gpu)) + (0.0001*loss_calc(pred_source2, labels_s, args.gpu))
                     #  0.3*loss_calc(pred_source1 + pred_source2, labels_s, args.gpu)
