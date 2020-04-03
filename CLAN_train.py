@@ -138,7 +138,7 @@ def get_arguments():
                         help="Where to save snapshots of the model.")
     parser.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY,
                         help="Regularisation parameter for L2-loss.")
-    parser.add_argument("--gpu", type=int, default=3,
+    parser.add_argument("--gpu", type=int, default=0,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose adaptation set.")
@@ -346,16 +346,19 @@ def main():
         _, batch = next(targetloader_iter)
         images_t, _, _, _ = batch
         images_t = Variable(images_t).cuda(args.gpu)
-        pred_target1, pred_target2, feature_ext_target = model(images_t)
-        #_, _, feature_ext_target = model(images_t)
-        pred_target1 = interp_target(pred_target1)
-        pred_target2 = interp_target(pred_target2)
+        #pred_target1, pred_target2, feature_ext_target = model(images_t)
+        _, _, feature_ext_target = model(images_t)
+        #pred_target1 = interp_target(pred_target1)
+        #pred_target2 = interp_target(pred_target2)
         loss_norm_target = 0.00015 * get_L2norm_loss_self_driven(feature_ext_target) * damping_norm
-        loss_norm_target.backward(retain_graph=True)
-        min_entropy_loss = entropy_loss(pred_target1)*0.0001 + entropy_loss(pred_target2)*0.00001
-        min_entropy_loss.backward()
+        loss_norm_target.backward()#retain_graph=True)
+        #min_entropy_loss = entropy_loss(pred_target1)*0.0001 + entropy_loss(pred_target2)*0.00001
+        #min_entropy_loss.backward()
         # loss_iw = iw_mse(pred_target1+pred_target2,0)
         # print(loss_iw)
+
+        optimizer.step()
+
         """
         weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
 
@@ -431,15 +434,14 @@ def main():
         optimizer.step()
         optimizer_D.step()
         """
-        optimizer.step()
 
         print('exp = {}'.format(args.snapshot_dir))
         print(
-            'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}, loss_norm_target = {3:.4f}, loss_norm_src = {4:.4f}, loss_ent = {5:.4f}'.format(
-                i_iter, args.num_steps, loss_seg, loss_norm_target, loss_norm_src,min_entropy_loss ))  # , loss_adv, loss_weight, loss_D_s, loss_D_t))
+            'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}, loss_norm_target = {3:.4f}, loss_norm_src = {4:.4f}'.format(
+                i_iter, args.num_steps, loss_seg, loss_norm_target, loss_norm_src))#,min_entropy_loss ))  # , loss_adv, loss_weight, loss_D_s, loss_D_t))
         f_loss = open(osp.join(args.snapshot_dir, 'loss.txt'), 'a')
-        f_loss.write( 'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}, loss_norm_target = {3:.4f}, loss_norm_src = {4:.4f}, loss_ent = {5:.4f}\n'.format(
-                i_iter, args.num_steps, loss_seg, loss_norm_target, loss_norm_src,min_entropy_loss ))  # , loss_adv, loss_weight, loss_D_s, loss_D_t))
+        f_loss.write( 'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}, loss_norm_target = {3:.4f}, loss_norm_src = {4:.4f}\n'.format(
+                i_iter, args.num_steps, loss_seg, loss_norm_target, loss_norm_src))#,min_entropy_loss ))  # , loss_adv, loss_weight, loss_D_s, loss_D_t))
         f_loss.close()
 
         if i_iter >= args.num_steps_stop - 1:
