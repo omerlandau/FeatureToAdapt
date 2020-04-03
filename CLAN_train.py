@@ -439,10 +439,10 @@ def main():
 
         print('exp = {}'.format(args.snapshot_dir))
         print(
-            'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}, loss_norm_target = {3:.4f}, loss_norm_src = {4:.4f}, ent = {5:.4f}'.format(
+            'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}, loss_norm_target = {3:.7f}, loss_norm_src = {4:.7f}, ent = {5:.7f}'.format(
                 i_iter, args.num_steps, loss_seg, loss_norm_target, loss_norm_src,min_entropy_loss))  # , loss_adv, loss_weight, loss_D_s, loss_D_t))
         f_loss = open(osp.join(args.snapshot_dir, 'loss.txt'), 'a')
-        f_loss.write( 'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}, loss_norm_target = {3:.4f}, loss_norm_src = {4:.4f}, ent = {5:.4f}'.format(
+        f_loss.write( 'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}, loss_norm_target = {3:.7f}, loss_norm_src = {4:.7f}, ent = {5:.7f}'.format(
                 i_iter, args.num_steps, loss_seg, loss_norm_target, loss_norm_src,min_entropy_loss))#,min_entropy_loss ))  # , loss_adv, loss_weight, loss_D_s, loss_D_t))
         f_loss.close()
 
