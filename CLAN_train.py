@@ -138,7 +138,7 @@ def get_arguments():
                         help="Where to save snapshots of the model.")
     parser.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY,
                         help="Regularisation parameter for L2-loss.")
-    parser.add_argument("--gpu", type=int, default=2,
+    parser.add_argument("--gpu", type=int, default=1,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose adaptation set.")
@@ -179,6 +179,8 @@ def entropy_loss(v):
         input: batch_size x channels x h x w
         output: batch_size x 1 x h x w
     """
+    print(v.shape)
+    print(v.dim())
     assert v.dim() == 4
     n, c, h, w = v.size()
     return -torch.sum(torch.mul(v, torch.log2(v + 1e-30))) / (n * h * w * np.log2(c))
