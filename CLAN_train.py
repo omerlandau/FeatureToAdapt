@@ -354,7 +354,7 @@ def main():
         loss_norm_target.backward(retain_graph=True)
         pred_target1 = interp_target(pred_target1)
         pred_target2 = interp_target(pred_target2)
-        print(pred_target1[:][:][0][0].shape)
+        print(pred_target1[0][0][:][:].shape)
         pred_target2 = F.softmax(pred_target2, dim=-1)
         print(pred_target2)
         pred_target1 = F.softmax(pred_target1, dim=-1)
