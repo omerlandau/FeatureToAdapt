@@ -100,7 +100,7 @@ def main():
             if index % 100 == 0:
                 print('%d processd' % index)
             image, _, _, name = batch
-            output1, _ , norm_dims = model(Variable(image).cuda(gpu0))
+            output1, output2 , norm_dims = model(Variable(image).cuda(gpu0))
 
             c+=1
 
@@ -111,7 +111,7 @@ def main():
             avg += temp
             print("L2 norm of pic {0} = {1}".format(c, temp))
 
-            output = interp(output1).cpu().data[0].numpy()
+            output = interp(output1+output2).cpu().data[0].numpy()
             
             output = output.transpose(1,2,0)
             output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
