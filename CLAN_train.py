@@ -339,8 +339,7 @@ def main():
         # feature generalization loss
         loss_norm_src.backward(retain_graph=True)
         # Segmentation Loss
-        loss_seg = (loss_calc(pred_source1, labels_s, args.gpu)) + (
-                    0.0001 * loss_calc(pred_source2, labels_s, args.gpu))
+        loss_seg = (loss_calc(pred_source1, labels_s, args.gpu)) + (loss_calc(pred_source2, labels_s, args.gpu))
         #  0.3*loss_calc(pred_source1 + pred_source2, labels_s, args.gpu)
         # loss_seg = (loss_calc(pred_source1, labels_s, args.gpu) + loss_calc(pred_source2, labels_s, args.gpu))
         loss_seg.backward()
@@ -356,7 +355,7 @@ def main():
         pred_target2 = interp_target(pred_target2)
         pred_target2 = F.softmax(pred_target2, dim=1)
         pred_target1 = F.softmax(pred_target1, dim=1)
-        min_entropy_loss = (entropy_loss(pred_target1) * 0.002 + entropy_loss(pred_target2) * 0.0001) * damping
+        min_entropy_loss = (entropy_loss(pred_target1) * 0.002 + entropy_loss(pred_target2) * 0.002) * damping
         min_entropy_loss.backward()
         # loss_iw = iw_mse(pred_target1+pred_target2,0)
         # print(loss_iw)
