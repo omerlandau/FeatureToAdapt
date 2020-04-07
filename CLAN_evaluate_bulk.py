@@ -84,9 +84,9 @@ def get_arguments():
 def main():
     """Create the model and start the evaluation process."""
 
-    for i in range(1, 28):
-        model_path = './snapshots/GTA2Cityscapes_norm_min_ent_multi/GTA5_{0:d}.pth'.format(i*2000)
-        save_path = './GTA_results/GTA2Cityscapes_norm_min_ent_multi_{0:d}'.format(i*2000)
+    for i in range(1, 21):
+        model_path = './snapshots/GTA2Cityscapes_reterain_from_only_norm_15_plus_70_damp/GTA5_{0:d}.pth'.format(i*2000)
+        save_path = './GTA_results/GTA2Cityscapes_reterain_from_only_norm_15_plus_70_damp_{0:d}'.format(i*2000)
         args = get_arguments()
     
         gpu0 = args.gpu
@@ -112,9 +112,9 @@ def main():
                 if index % 100 == 0:
                     print('%d processd' % index)
                 image, _, _, name = batch
-                output1, _, _ = model(Variable(image).cuda(gpu0))
+                output1, output2, _ = model(Variable(image).cuda(gpu0))
     
-                output = interp(output1).cpu().data[0].numpy()
+                output = interp(output1+output2).cpu().data[0].numpy()
                 
                 output = output.transpose(1,2,0)
                 output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
