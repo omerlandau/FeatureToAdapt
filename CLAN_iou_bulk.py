@@ -68,7 +68,7 @@ if __name__ == "__main__":
         csvwriter = csv.writer(datacsv,dialect = ("excel"))
         for i in range(1, 29):
             gt_dir = './data/CitySpaces/gtFine/val'
-            pred_dir = './GTAresults/GTA2Cityscapes_norm_min_ent_multi_{0:d}'.format(i*2000)
+            pred_dir = './GTA_results/GTA2Cityscapes_norm_min_ent_multi_{0:d}'.format(i*2000)
             devkit_dir = './dataset/cityscapes_list'
             mIoU = main(gt_dir, pred_dir, devkit_dir)
             csvwriter.writerow([mIoU])
