@@ -112,9 +112,9 @@ def main():
                 if index % 100 == 0:
                     print('%d processd' % index)
                 image, _, _, name = batch
-                output1, output2, _ = model(Variable(image).cuda(gpu0))
+                output1, _, _ = model(Variable(image).cuda(gpu0))
     
-                output = interp(output1 + output2).cpu().data[0].numpy()
+                output = interp(output1).cpu().data[0].numpy()
                 
                 output = output.transpose(1,2,0)
                 output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
