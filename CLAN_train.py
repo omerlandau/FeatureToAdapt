@@ -356,7 +356,7 @@ def main():
         pred_target2 = interp_target(pred_target2)
         pred_target2 = F.softmax(pred_target2, dim=1)
         pred_target1 = F.softmax(pred_target1, dim=1)
-        min_entropy_loss = (entropy_loss(pred_target1) * 0.00015 + entropy_loss(pred_target2) * 0.00001) * damping
+        min_entropy_loss = (entropy_loss(pred_target1) * 0.002 + entropy_loss(pred_target2) * 0.0001) * damping
         min_entropy_loss.backward()
         # loss_iw = iw_mse(pred_target1+pred_target2,0)
         # print(loss_iw)
