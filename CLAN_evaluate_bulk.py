@@ -86,7 +86,7 @@ def main():
 
     for i in range(1, 28):
         model_path = './snapshots/GTA2Cityscapes_norm_min_ent_multi_0015_0001/GTA5_{0:d}.pth'.format(i*2000)
-        save_path = './result/GTA2Cityscapes_norm_min_ent_multi_0015_0001_{0:d}'.format(i*2000)
+        save_path = './GTA_results/GTA2Cityscapes_norm_min_ent_multi_0015_0001_{0:d}'.format(i*2000)
         args = get_arguments()
     
         gpu0 = args.gpu

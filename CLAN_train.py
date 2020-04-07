@@ -45,7 +45,7 @@ RESTORE_FROM = '/a/home/cc/students/cs/omerlandau1/foromerlandau/FeatureToAdapt/
 
 SAVE_NUM_IMAGES = 2
 SAVE_PRED_EVERY = 2000
-SNAPSHOT_DIR = './snapshots/'
+SNAPSHOT_DIR = './GTA_snapshots/'
 
 # Hyper Paramters
 WEIGHT_DECAY = 0.0005
