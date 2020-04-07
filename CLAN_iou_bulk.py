@@ -64,11 +64,11 @@ def main(gt_dir, pred_dir, devkit_dir):
 
 
 if __name__ == "__main__":
-    with open("mIoU_result/GTA2Cityscapes_reterain_from_only_norm_15_plus_70_damp_mIoU.csv","a+",newline="") as datacsv:
+    with open("mIoU_result/GTA2Cityscapes_reterain_adv_from_only_norm_till34_mIoU.csv","a+",newline="") as datacsv:
         csvwriter = csv.writer(datacsv,dialect = ("excel"))
-        for i in range(1, 21):
+        for i in range(1, 17):
             gt_dir = './data/CitySpaces/gtFine/val'
-            pred_dir = './GTA_results/GTA2Cityscapes_reterain_from_only_norm_15_plus_70_damp_{0:d}'.format(i*2000)
+            pred_dir = './GTA_results/GTA2Cityscapes_reterain_adv_from_only_norm_{0:d}'.format(i*2000)
             devkit_dir = './dataset/cityscapes_list'
             mIoU = main(gt_dir, pred_dir, devkit_dir)
             csvwriter.writerow([mIoU])
