@@ -38,7 +38,7 @@ IGNORE_LABEL = 255
 
 MOMENTUM = 0.9
 NUM_CLASSES = 19
-RESTORE_FROM = '/a/home/cc/students/cs/omerlandau1/foromerlandau/FeatureToAdapt/snapshots/GTA2Cityscapes_only_norm/GTA5_100000.pth'
+RESTORE_FROM = './model/DeepLab_resnet_pretrained_init-f81d91e8.pth'
 # RESTORE_FROM = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000.pth'
 # RESTORE_FROM = './snapshots/GTA2Cityscapes_CVPR_Syn0820_Wg00005weight005_dampingx2/GTA5_36000.pth' #For retrain
 # RESTORE_FROM_D = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000_D.pth' #For retrain
@@ -51,8 +51,8 @@ SNAPSHOT_DIR = './GTA_snapshots/'
 WEIGHT_DECAY = 0.0005
 LEARNING_RATE = 2.5e-4
 LEARNING_RATE_D = 1e-4
-NUM_STEPS = 100000
-NUM_STEPS_STOP = 100000  # Use damping instead of early stopping
+NUM_STEPS = 200000
+NUM_STEPS_STOP = 200000  # Use damping instead of early stopping
 PREHEAT_STEPS = int(NUM_STEPS_STOP / 20)
 POWER = 0.9
 RANDOM_SEED = 999
@@ -339,7 +339,7 @@ def main():
         # adjust_learning_rate_D(optimizer_D, i_iter)
 
         damping = (1 - i_iter / NUM_STEPS)
-        damping_norm = (1 - (1.5 * i_iter + 70000) / NUM_STEPS)
+        damping_norm = (1 - (1.5 * i_iter) / NUM_STEPS)
 
         # ======================================================================================
         # train G
