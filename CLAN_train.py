@@ -403,6 +403,8 @@ def main():
         loss_adv = loss_adv * Lambda_adv * damping #+ 0.001*loss_iw*damping
         loss_adv.backward()
         
+        """
+        
         #Weight Discrepancy Loss
         W5 = None
         W6 = None
@@ -426,7 +428,9 @@ def main():
         #print(loss_weight)
         loss_weight.backward()
 
-        
+        optimizer.step()
+
+        """
 
         
         #======================================================================================
