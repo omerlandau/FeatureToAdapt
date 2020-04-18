@@ -108,7 +108,7 @@ def main():
                 print('%d processd' % index)
             image, _, _, name = batch
             output1, output2 , norm_dims = model(Variable(image).cuda(gpu0))
-            output1_2, output2_2, _ = model(Variable(image).cuda(gpu0))
+            output1_2, output2_2, _ = model2(Variable(image).cuda(gpu0))
 
             c+=1
 
