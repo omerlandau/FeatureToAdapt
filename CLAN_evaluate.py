@@ -57,6 +57,8 @@ def get_arguments():
                         help="Number of classes to predict (including background).")
     parser.add_argument("--restore-from", type=str, default=RESTORE_FROM,
                         help="Where restore model parameters from.")
+    parser.add_argument("--restore-from-second", type=str, default=RESTORE_FROM,
+                        help="Where restore model parameters from.")
     parser.add_argument("--gpu", type=int, default=0,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
@@ -78,16 +80,21 @@ def main():
     
     if args.model == 'ResNet':
         model = Res_Deeplab(num_classes=args.num_classes)
+        model2 = Res_Deeplab(num_classes=args.num_classes)
     
     if args.restore_from[:4] == 'http' :
         saved_state_dict = model_zoo.load_url(args.restore_from)
     else:
         saved_state_dict = torch.load(args.restore_from, map_location="cuda:{0}".format(args.gpu))
+        saved_state_dict_2 = torch.load(args.restore_from_second, map_location="cuda:{0}".format(args.gpu))
+
     model.load_state_dict(saved_state_dict)
+    model2.load_state_dict(saved_state_dict_2)
     
     model.eval()
     model.cuda(gpu0)
-    
+    model2.eval()
+    model2.cuda(gpu0)
     testloader = data.DataLoader(cityscapesDataSet(args.data_dir, args.data_list, crop_size=(1024, 512), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
                                     batch_size=1, shuffle=False, pin_memory=True)
 
@@ -101,6 +108,7 @@ def main():
                 print('%d processd' % index)
             image, _, _, name = batch
             output1, output2 , norm_dims = model(Variable(image).cuda(gpu0))
+            output1_2, output2_2, _ = model(Variable(image).cuda(gpu0))
 
             c+=1
 
@@ -111,7 +119,9 @@ def main():
             avg += temp
             print("L2 norm of pic {0} = {1}".format(c, temp))
 
-            output = interp(output1+output2).cpu().data[0].numpy()
+            output_final = (output2+output1)*0.7 + 0.3*(output1_2 + output2_2)
+
+            output = interp(output_final).cpu().data[0].numpy()
             
             output = output.transpose(1,2,0)
             output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
