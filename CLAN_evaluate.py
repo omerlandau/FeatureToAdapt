@@ -90,7 +90,7 @@ def main():
     if args.model == 'ResNet':
         model = Res_Deeplab(num_classes=args.num_classes)
         if(multi):
-            model2 = deeplab_multi.DeeplabMulti()
+            model2 = Res_Deeplab(num_classes=args.num_classes, multi=multi)
         else:
             model2 = Res_Deeplab(num_classes=args.num_classes)
     
@@ -99,13 +99,12 @@ def main():
     else:
         saved_state_dict = torch.load(args.restore_from, map_location="cuda:{0}".format(args.gpu))
         saved_state_dict_2 = torch.load(args.restore_from_second, map_location="cuda:{0}".format(args.gpu))
-        saved_state_dict_2 = saved_state_dict_2["state_dict"]
-        keys_1 = saved_state_dict.keys()
-        keys_2 = saved_state_dict_2.keys()
-        keys_2 = list(keys_2)
-        keys_1 = list(keys_1)
-        for i in keys_2:
-            saved_state_dict_2[i[7:]] = saved_state_dict_2.pop(i)
+        if(multi):
+            saved_state_dict_2 = saved_state_dict_2["state_dict"]
+            keys_2 = saved_state_dict_2.keys()
+            keys_2 = list(keys_2)
+            for i in keys_2:
+                saved_state_dict_2[i[7:]] = saved_state_dict_2.pop(i)
 
     model.load_state_dict(saved_state_dict)
     model2.load_state_dict(saved_state_dict_2)
