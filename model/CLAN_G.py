@@ -229,7 +229,7 @@ class ResNet(nn.Module):
                 {'params': self.get_10x_lr_params(), 'lr': 10 * args.learning_rate}]
 
 
-def Res_Deeplab(num_classes=21, multi=False):
+def Res_Deeplab(num_classes=19, multi=False):
     model = ResNet(Bottleneck, [3, 4, 23, 3], num_classes, multi=multi)
     return model
 
