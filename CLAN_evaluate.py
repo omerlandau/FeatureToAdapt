@@ -186,7 +186,7 @@ def main():
                 pred_c = (pred_P + pred_P_2) / 2
                 output_f_2 = pred_c.data.cpu().numpy()
 
-            output_final = torch.Tensor(output_f_2)*0.65 + 0.35*torch.Tensor(output_f)
+            output_final = torch.Tensor(output_f_2)*0.55 + 0.45*torch.Tensor(output_f)
 
             output = interp(output_final).cpu().data[0].numpy()
             
