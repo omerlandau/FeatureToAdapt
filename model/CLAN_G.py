@@ -168,6 +168,7 @@ class ResNet(nn.Module):
         return block(inplanes, dilation_series, padding_series, num_classes)
 
     def forward(self, x):
+        input_size = x.size()[2:]
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
@@ -179,6 +180,8 @@ class ResNet(nn.Module):
         x2 = self.layer5(x1)
         if(self.multi):
             x3 = self.layer6(x)
+            x3 = F.interpolate(x3, size=input_size, mode='bilinear', align_corners=True)
+            x2 = F.interpolate(x2, size=input_size, mode='bilinear', align_corners=True)
         else:
             x3 = self.layer6(x1)
         return x2, x3, x1
