@@ -132,7 +132,7 @@ def main():
             image, _, _, name = batch
             output1, output2 , norm_dims = model(Variable(image).cuda(gpu0))
             _, output2_2, _ = model2(Variable(image).cuda(gpu0))
-
+            x = image
             if(flipp):
                 pred_P = F.softmax(output2_2, dim=1)
 
