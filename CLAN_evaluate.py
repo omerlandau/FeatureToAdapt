@@ -150,6 +150,23 @@ def main():
                 pred_c = (pred_P + pred_P_2) / 2
                 output_f = pred_c.data.cpu().numpy()
 
+            if (flipp):
+                pred_P = F.softmax(output2_2, dim=1)
+
+                def flip(x, dim):
+                    dim = x.dim() + dim if dim < 0 else dim
+                    inds = tuple(slice(None, None) if i != dim
+                                 else x.new(torch.arange(x.size(i) - 1, -1, -1).tolist()).long()
+                                 for i in range(x.dim()))
+                    return x[inds]
+
+                x_flip = flip(x, -1)
+                _, pred_flip, _ = model2(x_flip.cuda(gpu0))
+                pred_P_flip = F.softmax(pred_flip, dim=1)
+                pred_P_2 = flip(pred_P_flip, -1)
+                pred_c = (pred_P + pred_P_2) / 2
+                output_f_2 = pred_c.data.cpu().numpy()
+
 
             c+=1
 
@@ -160,7 +177,7 @@ def main():
             avg += temp
             print("L2 norm of pic {0} = {1}".format(c, temp))
 
-            output_final = torch.Tensor(output_f) #+ 0.3*(output1+output2)
+            output_final = torch.Tensor(output_f_2)*0.6 + 0.4*(output_f)
 
             output = interp(output_final).cpu().data[0].numpy()
             
