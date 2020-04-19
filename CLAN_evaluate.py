@@ -79,6 +79,8 @@ def main():
 
     if(args.multi == 'True'):
         multi = True
+    else:
+        multi = False
 
     if not os.path.exists(args.save):
         os.makedirs(args.save)
