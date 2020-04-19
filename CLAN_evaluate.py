@@ -59,6 +59,8 @@ def get_arguments():
                         help="Where restore model parameters from.")
     parser.add_argument("--restore-from-second", type=str, default=RESTORE_FROM,
                         help="Where restore model parameters from.")
+    parser.add_argument("--multi", type=str, default=False,
+                        help="is restored model multi or not.")
     parser.add_argument("--gpu", type=int, default=0,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
@@ -80,7 +82,10 @@ def main():
     
     if args.model == 'ResNet':
         model = Res_Deeplab(num_classes=args.num_classes)
-        model2 = Res_Deeplab(num_classes=args.num_classes)
+        if(multi):
+            model2 = Res_Deeplab(num_classes=args.num_classes, multi=multi)
+        else:
+            model2 = Res_Deeplab(num_classes=args.num_classes)
     
     if args.restore_from[:4] == 'http' :
         saved_state_dict = model_zoo.load_url(args.restore_from)

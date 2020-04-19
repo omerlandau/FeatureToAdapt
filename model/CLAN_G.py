@@ -116,8 +116,9 @@ class Classifier_Module(nn.Module):
 
 
 class ResNet(nn.Module):
-    def __init__(self, block, layers, num_classes):
+    def __init__(self, block, layers, num_classes, multi=False):
         self.inplanes = 64
+        self.multi = multi
         super(ResNet, self).__init__()
         self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3,
                                bias=False)
@@ -131,7 +132,10 @@ class ResNet(nn.Module):
         self.layer3 = self._make_layer(block, 256, layers[2], stride=1, dilation=2)
         self.layer4 = self._make_layer(block, 512, layers[3], stride=1, dilation=4)
         self.layer5 = self._make_pred_layer(Classifier_Module, 2048, [6, 12, 18, 24], [6, 12, 18, 24], num_classes)
-        self.layer6 = self._make_pred_layer(Classifier_Module, 2048, [6, 12, 18, 24], [6, 12, 18, 24], num_classes)
+        if(self.multi):
+            self.layer6 = self._make_pred_layer(Classifier_Module, 1024, [6, 12, 18, 24], [6, 12, 18, 24], num_classes)
+        else:
+            self.layer6 = self._make_pred_layer(Classifier_Module, 2048, [6, 12, 18, 24], [6, 12, 18, 24], num_classes)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -173,7 +177,10 @@ class ResNet(nn.Module):
         x = self.layer3(x)
         x1 = self.layer4(x)
         x2 = self.layer5(x1)
-        x3 = self.layer6(x1)
+        if(self.multi):
+            x3 = self.layer6(x)
+        else:
+            x3 = self.layer6(x1)
         return x2, x3, x1
 
     def get_1x_lr_params_NOscale(self):
@@ -219,8 +226,8 @@ class ResNet(nn.Module):
                 {'params': self.get_10x_lr_params(), 'lr': 10 * args.learning_rate}]
 
 
-def Res_Deeplab(num_classes=21):
-    model = ResNet(Bottleneck, [3, 4, 23, 3], num_classes)
+def Res_Deeplab(num_classes=21, multi=False):
+    model = ResNet(Bottleneck, [3, 4, 23, 3], num_classes, multi=multi)
     return model
 
 
