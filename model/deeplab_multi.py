@@ -173,15 +173,4 @@ class ResNetMulti(nn.Module):
 
 def DeeplabMulti(num_classes=21, pretrained=True):
     model = ResNetMulti(Bottleneck, [3, 4, 23, 3], num_classes)
-
-    if pretrained:
-        restore_from = './model/GTA5_to_Cityscapes_MaxSquare_IW_Multi.pth'
-        saved_state_dict = torch.load(restore_from, map_location="cuda:2")
-
-        #new_params = model.state_dict().copy()
-        #for i in saved_state_dict:
-        #    i_parts = i.split('.')
-        #    if not i_parts[1] == 'layer5':
-        #        new_params['.'.join(i_parts[1:])] = saved_state_dict[i]
-        model.load_state_dict(saved_state_dict["state_dict"])
     return model
