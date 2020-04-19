@@ -104,10 +104,8 @@ def main():
         keys_2 = saved_state_dict_2.keys()
         keys_2 = list(keys_2)
         keys_1 = list(keys_1)
-        print(keys_2)
-        print(keys_1)
-        saved_state_dict_2[keys_1] = saved_state_dict_2[keys_2]
-        del saved_state_dict_2[keys_2]
+        for i,j in zip(keys_2, keys_1):
+            saved_state_dict_2[j] = saved_state_dict_2.pop(i)
 
     model.load_state_dict(saved_state_dict)
     model2.load_state_dict(saved_state_dict_2)
