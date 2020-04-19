@@ -124,8 +124,7 @@ def main():
     interp = nn.Upsample(size=(1024, 2048), mode='bilinear', align_corners=True)
 
     with torch.no_grad():
-        avg = 0
-        c=0
+
         for index, batch in enumerate(testloader):
             if index % 100 == 0:
                 print('%d processd' % index)
@@ -202,8 +201,6 @@ def main():
 
             output_col.save('%s/%s_color.png' % (args.save, name.split('.')[0]))
 
-        avg = avg/c
-        print("average L2 norm = {0}".format(avg))
 
 
 if __name__ == '__main__':
