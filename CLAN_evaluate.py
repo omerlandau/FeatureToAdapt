@@ -126,7 +126,7 @@ def main():
                 print('%d processd' % index)
             image, _, _, name = batch
             output1, output2 , norm_dims = model(Variable(image).cuda(gpu0))
-            output1_2, output2_2, _ = model2(Variable(image).cuda(gpu0))
+            _, output2_2, _ = model2(Variable(image).cuda(gpu0))
             print(output1_2.shape)
             print(output1.shape)
             print(output2_2.shape)
@@ -143,7 +143,7 @@ def main():
             avg += temp
             print("L2 norm of pic {0} = {1}".format(c, temp))
 
-            output_final = (output2+output1)*0.3 + 0.7*(output1_2)
+            output_final = (output2+output1)*0.3 + 0.7*(output2_2)
 
             output = interp(output_final).cpu().data[0].numpy()
             
