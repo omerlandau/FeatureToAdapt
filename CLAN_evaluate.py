@@ -106,7 +106,7 @@ def main():
         keys_1 = list(keys_1)
         for i in keys_2:
             saved_state_dict_2[i[7:]] = saved_state_dict_2.pop(i)
-        print(saved_state_dict_2.keys)
+        print(saved_state_dict_2.keys())
 
     model.load_state_dict(saved_state_dict)
     model2.load_state_dict(saved_state_dict_2)
