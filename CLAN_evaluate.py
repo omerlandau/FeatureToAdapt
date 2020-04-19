@@ -177,7 +177,7 @@ def main():
             avg += temp
             print("L2 norm of pic {0} = {1}".format(c, temp))
 
-            output_final = torch.Tensor(output_f_2)*0.7 + 0.3*(output_f)
+            output_final = torch.Tensor(output_f_2)*0.6 + 0.4*(output_f)
 
             output = interp(output_final).cpu().data[0].numpy()
             
