@@ -144,8 +144,8 @@ def main():
                     return x[inds]
 
                 x_flip = flip(x, -1)
-                _,pred_flip, _ = model2(x_flip.cuda(gpu0))
-                pred_P_flip = F.softmax(pred_flip, dim=1)
+                pred_flip_1,pred_flip, _ = model(x_flip.cuda(gpu0))
+                pred_P_flip = F.softmax(pred_flip+pred_flip_1, dim=1)
                 pred_P_2 = flip(pred_P_flip, -1)
                 pred_c = (pred_P + pred_P_2) / 2
                 output_f = pred_c.data.cpu().numpy()
