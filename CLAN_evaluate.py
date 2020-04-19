@@ -169,7 +169,7 @@ def main():
                 pred_c = (pred_P + pred_P_2) / 2
                 output_f_2 = pred_c.data.cpu().numpy()
 
-            if (not flipp and not multi):
+            if (flipp and not multi):
                 pred_P = F.softmax(output2_2 + output1_2, dim=1)
 
                 def flip(x, dim):
