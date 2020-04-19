@@ -176,7 +176,7 @@ def DeeplabMulti(num_classes=21, pretrained=True):
 
     if pretrained:
         restore_from = './model/GTA5_to_Cityscapes_MaxSquare_IW_Multi.pth'
-        saved_state_dict = torch.load(restore_from)
+        saved_state_dict = torch.load(restore_from, map_location="cuda:2")
 
         #new_params = model.state_dict().copy()
         #for i in saved_state_dict:
