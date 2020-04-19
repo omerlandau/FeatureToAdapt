@@ -169,7 +169,7 @@ def main():
                 pred_c = (pred_P + pred_P_2) / 2
                 output_f_2 = pred_c.data.cpu().numpy()
 
-            if (flipp and not multi):
+            if (not flipp and not multi):
                 pred_P = F.softmax(output2_2 + output1_2, dim=1)
 
                 def flip(x, dim):
@@ -186,7 +186,7 @@ def main():
                 pred_c = (pred_P + pred_P_2) / 2
                 output_f_2 = pred_c.data.cpu().numpy()
 
-            output_final = torch.Tensor(output_f_2)
+            output_final = torch.Tensor(output_f)*0.4 + (output1_2+output2_2)*0.6
 
             output = interp(output_final).cpu().data[0].numpy()
             
