@@ -5,8 +5,6 @@ from torch.autograd import Variable
 from torch.utils import data, model_zoo
 from model.CLAN_G import Res_Deeplab
 from dataset.cityscapes_dataset import cityscapesDataSet
-from model import deeplab_multi
-from model import ResNet101
 import os
 from PIL import Image
 import torch.nn as nn
