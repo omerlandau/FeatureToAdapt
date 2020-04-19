@@ -5,6 +5,8 @@ from torch.autograd import Variable
 from torch.utils import data, model_zoo
 from model.CLAN_G import Res_Deeplab
 from dataset.cityscapes_dataset import cityscapesDataSet
+from model import deeplab_multi
+from model import ResNet101
 import os
 from PIL import Image
 import torch.nn as nn
@@ -88,7 +90,7 @@ def main():
     if args.model == 'ResNet':
         model = Res_Deeplab(num_classes=args.num_classes)
         if(multi):
-            model2 = Res_Deeplab(num_classes=args.num_classes, multi=multi)
+            model2 = deeplab_multi.DeeplabMulti()
         else:
             model2 = Res_Deeplab(num_classes=args.num_classes)
     
