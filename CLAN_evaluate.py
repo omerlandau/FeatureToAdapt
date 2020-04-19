@@ -77,6 +77,9 @@ def main():
 
     gpu0 = args.gpu
 
+    if(multi == 'True'):
+        multi = True
+
     if not os.path.exists(args.save):
         os.makedirs(args.save)
     
@@ -124,7 +127,7 @@ def main():
             avg += temp
             print("L2 norm of pic {0} = {1}".format(c, temp))
 
-            output_final = (output2+output1)*0.7 + 0.4*(output1_2 + output2_2)
+            output_final = (output2+output1)*0.2 + 0.7*(output1_2 + output2_2)
 
             output = interp(output_final).cpu().data[0].numpy()
             
