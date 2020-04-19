@@ -131,11 +131,11 @@ class ResNet(nn.Module):
         self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
         self.layer3 = self._make_layer(block, 256, layers[2], stride=1, dilation=2)
         self.layer4 = self._make_layer(block, 512, layers[3], stride=1, dilation=4)
-        self.layer5 = self._make_pred_layer(Classifier_Module, 2048, [6, 12, 18, 24], [6, 12, 18, 24], num_classes)
         if(self.multi):
-            self.layer6 = self._make_pred_layer(Classifier_Module, 1024, [6, 12, 18, 24], [6, 12, 18, 24], num_classes)
+            self.layer5 = self._make_pred_layer(Classifier_Module, 1024, [6, 12, 18, 24], [6, 12, 18, 24], num_classes)
         else:
-            self.layer6 = self._make_pred_layer(Classifier_Module, 2048, [6, 12, 18, 24], [6, 12, 18, 24], num_classes)
+            self.layer5 = self._make_pred_layer(Classifier_Module, 2048, [6, 12, 18, 24], [6, 12, 18, 24], num_classes)
+        self.layer6 = self._make_pred_layer(Classifier_Module, 2048, [6, 12, 18, 24], [6, 12, 18, 24], num_classes)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -176,11 +176,11 @@ class ResNet(nn.Module):
         x = self.layer2(x)
         x = self.layer3(x)
         x1 = self.layer4(x)
-        x2 = self.layer5(x1)
         if(self.multi):
-            x3 = self.layer6(x)
+            x2 = self.layer5(x)
         else:
-            x3 = self.layer6(x1)
+            x2 = self.layer5(x1)
+        x3 = self.layer6(x1)
         return x2, x3, x1
 
     def get_1x_lr_params_NOscale(self):
