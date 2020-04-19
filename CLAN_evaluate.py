@@ -127,10 +127,6 @@ def main():
             image, _, _, name = batch
             output1, output2 , norm_dims = model(Variable(image).cuda(gpu0))
             _, output2_2, _ = model2(Variable(image).cuda(gpu0))
-            print(output1_2.shape)
-            print(output1.shape)
-            print(output2_2.shape)
-            print(output2.shape)
 
             exit(1)
 
