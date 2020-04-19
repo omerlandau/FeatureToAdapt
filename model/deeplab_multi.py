@@ -183,5 +183,5 @@ def DeeplabMulti(num_classes=21, pretrained=True):
         #    i_parts = i.split('.')
         #    if not i_parts[1] == 'layer5':
         #        new_params['.'.join(i_parts[1:])] = saved_state_dict[i]
-        model.load_state_dict(new_params[saved_state_dict["state_dict"]])
+        model.load_state_dict(saved_state_dict["state_dict"])
     return model
