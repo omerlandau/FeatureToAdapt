@@ -100,6 +100,7 @@ def main():
         saved_state_dict_2 = saved_state_dict_2['state_dict']
         #print(saved_state_dict.keys())
         print(saved_state_dict_2.keys())
+        exit(1)
 
     model.load_state_dict(saved_state_dict)
     model2.load_state_dict(saved_state_dict_2)
