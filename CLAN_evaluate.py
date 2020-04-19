@@ -106,7 +106,6 @@ def main():
         keys_1 = list(keys_1)
         for i in keys_2:
             saved_state_dict_2[i[7:]] = saved_state_dict_2.pop(i)
-        print(saved_state_dict_2.keys())
 
     model.load_state_dict(saved_state_dict)
     model2.load_state_dict(saved_state_dict_2)
@@ -129,6 +128,9 @@ def main():
             image, _, _, name = batch
             output1, output2 , norm_dims = model(Variable(image).cuda(gpu0))
             output1_2, output2_2, _ = model2(Variable(image).cuda(gpu0))
+            print(output1_2)
+
+            exit(1)
 
             c+=1
 
