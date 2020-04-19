@@ -104,8 +104,8 @@ def main():
         keys_2 = saved_state_dict_2.keys()
         keys_2 = list(keys_2)
         keys_1 = list(keys_1)
-        for i,j in zip(keys_2, keys_1):
-            saved_state_dict_2[j[7:]] = saved_state_dict_2.pop(i)
+        for i in keys_2:
+            saved_state_dict_2[i[7:]] = saved_state_dict_2.pop(i)
         print(saved_state_dict_2.keys)
 
     model.load_state_dict(saved_state_dict)
