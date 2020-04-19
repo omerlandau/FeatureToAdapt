@@ -130,7 +130,7 @@ def main():
             if index % 100 == 0:
                 print('%d processd' % index)
             image, _, _, name = batch
-            output1, output2 , norm_dims = model(Variable(image).cuda(gpu0))
+            output1, output2 , _ = model(Variable(image).cuda(gpu0))
             if(multi):
                 _, output2_2, _ = model2(Variable(image).cuda(gpu0))
             else:
@@ -186,16 +186,6 @@ def main():
                 pred_P_2 = flip(pred_P_flip, -1)
                 pred_c = (pred_P + pred_P_2) / 2
                 output_f_2 = pred_c.data.cpu().numpy()
-
-
-            c+=1
-
-            n = norm_dims.norm(p=2, dim=1).cuda(gpu0)
-
-            temp = torch.dist(n.flatten(), torch.zeros(n.flatten().shape).cuda(gpu0))
-
-            avg += temp
-            print("L2 norm of pic {0} = {1}".format(c, temp))
 
             output_final = torch.Tensor(output_f_2)*0.65 + 0.35*torch.Tensor(output_f)
 
