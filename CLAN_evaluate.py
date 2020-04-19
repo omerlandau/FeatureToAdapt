@@ -84,9 +84,9 @@ def main():
     else:
         multi = False
     if(args.flip == 'True'):
-        flipp == True
+        flipp = True
     else:
-        flipp == False
+        flipp = False
 
     if not os.path.exists(args.save):
         os.makedirs(args.save)
