@@ -100,7 +100,12 @@ def main():
         saved_state_dict = torch.load(args.restore_from, map_location="cuda:{0}".format(args.gpu))
         saved_state_dict_2 = torch.load(args.restore_from_second, map_location="cuda:{0}".format(args.gpu))
         saved_state_dict_2 = saved_state_dict_2["state_dict"]
+        keys_1 = saved_state_dict.keys()
         keys_2 = saved_state_dict_2.keys()
+        keys_2 = list(keys_2)
+        keys_1 = list(keys_1)
+        print(keys_2)
+        print(keys_1)
         saved_state_dict_2[saved_state_dict.keys()] = saved_state_dict_2[keys_2]
         del saved_state_dict_2[keys_2]
 
