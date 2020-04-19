@@ -104,11 +104,11 @@ def main():
             for i in keys_2:
                 saved_state_dict_2[i[7:]] = saved_state_dict_2.pop(i)
 
-    model.load_state_dict(saved_state_dict)
+    #model.load_state_dict(saved_state_dict)
     model2.load_state_dict(saved_state_dict_2)
     
-    model.eval()
-    model.cuda(gpu0)
+    #model.eval()
+    #model.cuda(gpu0)
     model2.eval()
     model2.cuda(gpu0)
     testloader = data.DataLoader(cityscapesDataSet(args.data_dir, args.data_list, crop_size=(1024, 512), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
