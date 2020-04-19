@@ -135,7 +135,7 @@ def main():
             avg += temp
             print("L2 norm of pic {0} = {1}".format(c, temp))
 
-            output_final = (output2+output1)*0.3 + 0.7*(output2_2)
+            output_final = output2_2
 
             output = interp(output_final).cpu().data[0].numpy()
             
