@@ -134,7 +134,7 @@ def main():
             _, output2_2, _ = model2(Variable(image).cuda(gpu0))
             x = image
             if(flipp):
-                pred_P = F.softmax(output2_2, dim=1)
+                pred_P = F.softmax(output1+output2, dim=1)
 
                 def flip(x, dim):
                     dim = x.dim() + dim if dim < 0 else dim
@@ -148,7 +148,7 @@ def main():
                 pred_P_flip = F.softmax(pred_flip, dim=1)
                 pred_P_2 = flip(pred_P_flip, -1)
                 pred_c = (pred_P + pred_P_2) / 2
-                output2_2 = pred_c.data.cpu().numpy()
+                output_f = pred_c.data.cpu().numpy()
 
 
             c+=1
@@ -160,7 +160,7 @@ def main():
             avg += temp
             print("L2 norm of pic {0} = {1}".format(c, temp))
 
-            output_final = torch.Tensor(output2_2) #+ 0.3*(output1+output2)
+            output_final = torch.Tensor(output_f) #+ 0.3*(output1+output2)
 
             output = interp(output_final).cpu().data[0].numpy()
             
