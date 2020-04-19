@@ -128,12 +128,12 @@ def main():
 
             c+=1
 
-            n = norm_dims.norm(p=2, dim=1).cuda(gpu0)
+            #n = norm_dims.norm(p=2, dim=1).cuda(gpu0)
 
-            temp = torch.dist(n.flatten(), torch.zeros(n.flatten().shape).cuda(gpu0))
+            #temp = torch.dist(n.flatten(), torch.zeros(n.flatten().shape).cuda(gpu0))
 
-            avg += temp
-            print("L2 norm of pic {0} = {1}".format(c, temp))
+            #avg += temp
+            #print("L2 norm of pic {0} = {1}".format(c, temp))
 
             output_final = output2_2
 
