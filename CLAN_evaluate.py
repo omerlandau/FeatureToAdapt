@@ -97,9 +97,9 @@ def main():
     if args.restore_from[:4] == 'http' :
         saved_state_dict = model_zoo.load_url(args.restore_from)
     else:
-        saved_state_dict = torch.load(args.restore_from_second, map_location="cuda:{0}".format(args.gpu))
-        saved_state_dict_2 = torch.load(args.restore_from, map_location="cuda:{0}".format(args.gpu))
-        saved_state_dict_2 = saved_state_dict_2["state_dict"]
+        saved_state_dict = torch.load(args.restore_from, map_location="cuda:{0}".format(args.gpu))
+        #saved_state_dict_2 = torch.load(args.restore_from_second, map_location="cuda:{0}".format(args.gpu))
+        #saved_state_dict_2 = saved_state_dict_2["state_dict"]
 
     model.load_state_dict(saved_state_dict)
     #model2.load_state_dict(saved_state_dict_2)

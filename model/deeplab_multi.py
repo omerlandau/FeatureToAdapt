@@ -171,11 +171,11 @@ class ResNetMulti(nn.Module):
                 {'params': self.get_10x_lr_params(), 'lr': 10 * args.lr}]
 
 
-def DeeplabMulti(num_classes=21, pretrained=False):
+def DeeplabMulti(num_classes=21, pretrained=True):
     model = ResNetMulti(Bottleneck, [3, 4, 23, 3], num_classes)
 
     if pretrained:
-        restore_from = './pretrained_model/DeepLab_resnet_pretrained_init-f81d91e8.pth'
+        restore_from = './model/GTA5_to_Cityscapes_MaxSquare_IW_Multi.pth'
         saved_state_dict = torch.load(restore_from)
 
         new_params = model.state_dict().copy()
