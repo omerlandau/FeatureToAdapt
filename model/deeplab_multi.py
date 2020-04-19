@@ -121,11 +121,11 @@ class ResNetMulti(nn.Module):
 
         x = self.layer3(x)
         x1 = self.layer5(x)
-        x1 = F.interpolate(x1, size=input_size, mode='bilinear', align_corners=True)
+        #x1 = F.interpolate(x1, size=input_size, mode='bilinear', align_corners=True)
 
         x3 = self.layer4(x)
         x2 = self.layer6(x3)
-        x2 = F.interpolate(x2, size=input_size, mode='bilinear', align_corners=True)
+        #x2 = F.interpolate(x2, size=input_size, mode='bilinear', align_corners=True)
 
         return x2, x1, x3 # changed!
 
