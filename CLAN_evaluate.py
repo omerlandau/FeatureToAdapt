@@ -20,7 +20,7 @@ MODEL = 'ResNet' #Vgg
 IGNORE_LABEL = 255
 NUM_CLASSES = 19
 NUM_STEPS = 500 # Number of images in the validation set.
-RESTORE_FROM = 'http://vllab.ucmerced.edu/ytsai/CVPR18/GTA2Cityscapes_multi-ed35151c.pth'
+RESTORE_FROM = ''
 SET = 'val'
 
 palette = [128, 64, 128, 244, 35, 232, 70, 70, 70, 102, 102, 156, 190, 153, 153, 153, 153, 153, 250, 170, 30,
@@ -186,7 +186,7 @@ def main():
                 pred_c = (pred_P + pred_P_2) / 2
                 output_f_2 = pred_c.data.cpu().numpy()
 
-            output_final = torch.Tensor(output_f).cuda(gpu0)*0.42 + torch.Tensor(output_f_2).cuda(gpu0)*0.58
+            output_final = torch.Tensor(output_f).cuda(gpu0)*0.44 + torch.Tensor(output_f_2).cuda(gpu0)*0.56
 
             output = interp(output_final).cpu().data[0].numpy()
             
