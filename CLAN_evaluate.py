@@ -123,7 +123,7 @@ def main():
             if index % 100 == 0:
                 print('%d processd' % index)
             image, _, _, name = batch
-            output1, output2 , norm_dims = model(Variable(image).cuda(gpu0))
+            #output1, output2 , norm_dims = model(Variable(image).cuda(gpu0))
             _, output2_2, _ = model2(Variable(image).cuda(gpu0))
 
             c+=1
