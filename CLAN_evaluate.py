@@ -77,7 +77,7 @@ def main():
 
     gpu0 = args.gpu
 
-    if(multi == 'True'):
+    if(args.multi == 'True'):
         multi = True
 
     if not os.path.exists(args.save):
