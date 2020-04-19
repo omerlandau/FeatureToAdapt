@@ -128,8 +128,6 @@ def main():
             output1, output2 , norm_dims = model(Variable(image).cuda(gpu0))
             _, output2_2, _ = model2(Variable(image).cuda(gpu0))
 
-            exit(1)
-
             c+=1
 
             n = norm_dims.norm(p=2, dim=1).cuda(gpu0)
