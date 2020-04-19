@@ -7,6 +7,7 @@ from model.CLAN_G import Res_Deeplab
 from dataset.cityscapes_dataset import cityscapesDataSet
 import os
 from PIL import Image
+import torch.nn.functional as F
 import torch.nn as nn
 
 IMG_MEAN = np.array((104.00698793,116.66876762,122.67891434), dtype=np.float32)
