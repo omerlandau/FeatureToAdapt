@@ -63,6 +63,8 @@ def get_arguments():
                         help="is restored model multi or not.")
     parser.add_argument("--gpu", type=int, default=0,
                         help="choose gpu device.")
+    parser.add_argument("--flip", type=int, default=False,
+                        help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose evaluation set.")
     parser.add_argument("--save", type=str, default=SAVE_PATH,
@@ -81,6 +83,10 @@ def main():
         multi = True
     else:
         multi = False
+    if(args.flip == 'True'):
+        flipp == True
+    else:
+        flipp == False
 
     if not os.path.exists(args.save):
         os.makedirs(args.save)
@@ -125,6 +131,26 @@ def main():
             image, _, _, name = batch
             output1, output2 , norm_dims = model(Variable(image).cuda(gpu0))
             _, output2_2, _ = model2(Variable(image).cuda(gpu0))
+
+            if(flipp):
+                pred_P = F.softmax(output2_2, dim=1)
+
+                def flip(x, dim):
+                    dim = x.dim() + dim if dim < 0 else dim
+                    inds = tuple(slice(None, None) if i != dim
+                                 else x.new(torch.arange(x.size(i) - 1, -1, -1).tolist()).long()
+                                 for i in range(x.dim()))
+                    return x[inds]
+
+                x_flip = flip(x, -1)
+                _,pred_flip, _ = model2(x_flip)
+                if isinstance(pred_flip, tuple):
+                    pred_flip = pred_flip[0]
+                pred_P_flip = F.softmax(pred_flip, dim=1)
+                pred_P_2 = flip(pred_P_flip, -1)
+                pred_c = (pred_P + pred_P_2) / 2
+                output2_2 = pred_c.data.cpu().numpy()
+
 
             c+=1
 
