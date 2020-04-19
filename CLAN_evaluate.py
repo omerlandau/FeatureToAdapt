@@ -63,7 +63,7 @@ def get_arguments():
                         help="is restored model multi or not.")
     parser.add_argument("--gpu", type=int, default=0,
                         help="choose gpu device.")
-    parser.add_argument("--flip", type=int, default=False,
+    parser.add_argument("--flip", type=str, default=False,
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose evaluation set.")
