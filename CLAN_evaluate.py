@@ -104,11 +104,11 @@ def main():
             for i in keys_2:
                 saved_state_dict_2[i[7:]] = saved_state_dict_2.pop(i)
 
-    #model.load_state_dict(saved_state_dict)
+    model.load_state_dict(saved_state_dict)
     model2.load_state_dict(saved_state_dict_2)
     
-    #model.eval()
-    #model.cuda(gpu0)
+    model.eval()
+    model.cuda(gpu0)
     model2.eval()
     model2.cuda(gpu0)
     testloader = data.DataLoader(cityscapesDataSet(args.data_dir, args.data_list, crop_size=(1024, 512), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
@@ -123,17 +123,17 @@ def main():
             if index % 100 == 0:
                 print('%d processd' % index)
             image, _, _, name = batch
-            #output1, output2 , norm_dims = model(Variable(image).cuda(gpu0))
+            output1, output2 , norm_dims = model(Variable(image).cuda(gpu0))
             _, output2_2, _ = model2(Variable(image).cuda(gpu0))
 
             c+=1
 
-            #n = norm_dims.norm(p=2, dim=1).cuda(gpu0)
+            n = norm_dims.norm(p=2, dim=1).cuda(gpu0)
 
-            #temp = torch.dist(n.flatten(), torch.zeros(n.flatten().shape).cuda(gpu0))
+            temp = torch.dist(n.flatten(), torch.zeros(n.flatten().shape).cuda(gpu0))
 
-            #avg += temp
-            #print("L2 norm of pic {0} = {1}".format(c, temp))
+            avg += temp
+            print("L2 norm of pic {0} = {1}".format(c, temp))
 
             output_final = output2_2
 
