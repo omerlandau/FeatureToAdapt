@@ -121,7 +121,7 @@ def main():
     testloader = data.DataLoader(cityscapesDataSet(args.data_dir, args.data_list, crop_size=(1024, 512), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
                                     batch_size=1, shuffle=False, pin_memory=True)
 
-    interp = nn.Upsample(size=(1024, 2048), mode='bilinear', align_corners=True)
+    interp = nn.Upsample(size=(1024, 2048), mode='bicubic', align_corners=False)
 
     with torch.no_grad():
 
