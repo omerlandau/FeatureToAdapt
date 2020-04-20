@@ -62,7 +62,7 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
     pca.fit(splitted_imagesdict)
     X = pca.transform(splitted_imagesdict)
     print("done PCA")
-    tsne = TSNE(n_components=2, learning_rate=130, perplexity=20, angle=0.2, verbose=2, n_iter=6000, early_exaggeration=40).fit_transform(X)
+    tsne = TSNE(n_components=2, learning_rate=130, perplexity=30, angle=0.2, verbose=2, n_iter=6000, early_exaggeration=10).fit_transform(X)
     return tsne, total_id
 
 
@@ -467,7 +467,7 @@ def main():
     gta_images,gta_cmap = split_all_imgaes(gta_ids,gta_ids,'GTA',direct_i='./data/GTA5/images', direct_l='./data/GTA5/labels')
 
 
-    with open("./GTA_tsne_p20_exag_20", 'wb') as pfile:
+    with open("./GTA_tsne_p60_exag_20", 'wb') as pfile:
         pkl.dump(gta_images, pfile, protocol=3)
 
     with open("./GTA_cmap", 'wb') as pfile:
@@ -478,7 +478,7 @@ def main():
     city_images, city_cmap = split_all_imgaes(city_ids_i,city_ids_l,type='city', direct_l='./data/CitySpaces/gtFine/val', direct_i='./data/CitySpaces/leftImg8bit/val')
 
 
-    with open("./City_tsne_p20_exag_20", 'wb') as pfile:
+    with open("./City_tsne_p60_exag_20", 'wb') as pfile:
         pkl.dump(city_images, pfile, protocol=3)
 
     with open("./City_cmap", 'wb') as pfile:
