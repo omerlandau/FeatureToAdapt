@@ -304,12 +304,6 @@ def main():
                         crop_size=input_size_source,
                         scale=True, mirror=True, mean=IMG_MEAN),
             batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=True)
-    # else:
-    #    trainloader = data.DataLoader(
-    #        SYNTHIADataSet(args.data_dir, args.data_list, max_iters=args.num_steps * args.iter_size * args.batch_size,
-    #                    crop_size=input_size_source,
-    #                    scale=True, mirror=True, mean=IMG_MEAN),
-    #        batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=True)
 
     trainloader_iter = enumerate(trainloader)
 
