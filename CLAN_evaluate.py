@@ -132,9 +132,13 @@ def main():
             output1, output2 , _ = model(Variable(image).cuda(gpu0))
             if(multi):
                 _, output2_2, _ = model2(Variable(image).cuda(gpu0))
+                output_f_2 = output2_2
             else:
                 output1_2, output2_2, _ = model(Variable(image).cuda(gpu0))
+                output_f_2 = output1_2 + output2_2
             x = image
+            output_f = output1 + output2
+
             if(flipp):
                 pred_P = F.softmax(output1+output2, dim=1)
 
