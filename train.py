@@ -18,7 +18,6 @@ from utils.loss import WeightedBCEWithLogitsLoss
 from utils.loss import IW_MaxSquareloss
 
 from dataset.gta5_dataset import GTA5DataSet
-# from dataset.synthia_dataset import SYNTHIADataSet
 from dataset.cityscapes_dataset import cityscapesDataSet
 
 torch.manual_seed(999)
