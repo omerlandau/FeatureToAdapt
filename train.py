@@ -154,6 +154,8 @@ def get_arguments():
                         help="choose adaptation set.")
     parser.add_argument("--weight_L2norm", type=str, default=0.01,
                         help="choose norm loss weight.")
+    parser.add_argument("--adv", type=str, default=True,
+                        help="choose norm loss weight.")
     return parser.parse_args()
 
 
@@ -249,6 +251,14 @@ def main():
 
     cudnn.enabled = True
 
+    is_adv = False
+
+    if(args.adv == 'True'):
+        is_adv = True
+    else:
+        is_adv = False
+
+
     # Create Network
     model = Res_Deeplab(num_classes=args.num_classes)
     print(model)
@@ -273,15 +283,17 @@ def main():
     cudnn.benchmark = True
 
     # Init D
-    # model_D = FCDiscriminator(num_classes=args.num_classes)
+
+    if(is_adv):
+        model_D = FCDiscriminator(num_classes=args.num_classes)
     # =============================================================================
     #    #for retrain
     #    saved_state_dict_D = torch.load(RESTORE_FROM_D, map_location="cuda:{0}".format(args.gpu))
     #    model_D.load_state_dict(saved_state_dict_D)
     # =============================================================================
-
-    # model_D.train()
-    # model_D.cuda(args.gpu)
+    if(is_adv):
+        model_D.train()
+        model_D.cuda(args.gpu)
 
     if not os.path.exists(args.snapshot_dir):
         os.makedirs(args.snapshot_dir)
@@ -315,13 +327,12 @@ def main():
                           lr=args.learning_rate, momentum=args.momentum, weight_decay=args.weight_decay)
     optimizer.zero_grad()
 
-    # optimizer_D = optim.Adam(model_D.parameters(), lr=args.learning_rate_D, betas=(0.9, 0.99))
-    # optimizer_D.zero_grad()
+    if(is_adv):
+        optimizer_D = optim.Adam(model_D.parameters(), lr=args.learning_rate_D, betas=(0.9, 0.99))
+        optimizer_D.zero_grad()
 
     bce_loss = torch.nn.BCEWithLogitsLoss()
     weighted_bce_loss = WeightedBCEWithLogitsLoss()
-
-    iw_mse = IW_MaxSquareloss()
 
     interp_source = nn.Upsample(size=(input_size_source[1], input_size_source[0]), mode='bilinear', align_corners=True)
     interp_target = nn.Upsample(size=(input_size_target[1], input_size_target[0]), mode='bilinear', align_corners=True)
@@ -346,8 +357,9 @@ def main():
         # ======================================================================================
 
         # Remove Grads in D
-        # for param in model_D.parameters():
-        #    param.requires_grad = False
+        if(is_adv):
+            for param in model_D.parameters():
+                param.requires_grad = False
 
         # Train with Source
         _, batch = next(trainloader_iter)
@@ -373,117 +385,137 @@ def main():
         _, batch = next(targetloader_iter)
         images_t, _, _, _ = batch
         images_t = Variable(images_t).cuda(args.gpu)
-
-        # pred_target1, pred_target2, feature_ext_target = model(images_t)
-        _, _, feature_ext_target = model(images_t)
-
-        # pred_target1 = interp_target(pred_target1)
-        # pred_target2 = interp_target(pred_target2)
-
-        loss_norm_target = 0.00015 * get_L2norm_loss_self_driven(feature_ext_target) * damping_norm
-
-        loss_norm_target.backward()  # retain_graph=True)
-
-        # loss_iw = iw_mse(pred_target1+pred_target2,0)
-
-        # print(loss_iw)
-
-        optimizer.step()
-        """
-        weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
-        D_out = interp_target(model_D(F.softmax(pred_target1 + pred_target2, dim = 1)))
-        #Adaptive Adversarial Loss
-        if(i_iter > 0):
-            loss_adv = weighted_bce_loss(D_out, 
-                                    Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(
-                                        args.gpu), weight_map, Epsilon, Lambda_local)
+        if(is_adv):
+            pred_target1, pred_target2, feature_ext_target = model(images_t)
         else:
-            loss_adv = bce_loss(D_out,
-                          Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(args.gpu))
-        loss_adv = loss_adv * Lambda_adv * damping #+ 0.001*loss_iw*damping
-        loss_adv.backward()
-        
-        """
-        
-        #Weight Discrepancy Loss
-        W5 = None
-        W6 = None
-        if args.model == 'ResNet':
-            for (w5, w6) in zip(model.layer5.parameters(), model.layer6.parameters()):
-                if W5 is None and W6 is None:
-                    W5 = w5.view(-1)
-                    W6 = w6.view(-1)
-                else:
-                    W5 = torch.cat((W5, w5.view(-1)), 0)
-                    W6 = torch.cat((W6, w6.view(-1)), 0)
-        print("w5 = {0}, w6 = {1}".format(w5, w6))
-        #w5 = w5.reshape([1,19])
-        #w6 = w6.reshape([1,19])
-        #print("w5 = {0}, w6 = {1}".format(w5, w6))
-        loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
-        #loss_weight = discrepancy_slice_wasserstein(w5, w6)
-        #print(loss_weight)
-        #loss_weight = (-loss_weight * Lambda_weight * damping + 0.1)
-        loss_weight = loss_weight * Lambda_weight * damping * 2
-        #print(loss_weight)
-        loss_weight.backward()
-
-        optimizer.step()
-
-        """
-
-        
-        #======================================================================================
-        # train D
-        #======================================================================================
-        # Bring back Grads in D
-        for param in model_D.parameters():
-            param.requires_grad = True
-        # Train with Source
-        pred_source1 = pred_source1.detach()
-        pred_source2 = pred_source2.detach()
-        D_out_s = interp_source(model_D(F.softmax(pred_source1 + pred_source2, dim = 1)))
-        loss_D_s = bce_loss(D_out_s,
-                          Variable(torch.FloatTensor(D_out_s.data.size()).fill_(source_label)).cuda(args.gpu))
-        loss_D_s.backward()
-        # Train with Target
-        pred_target1 = pred_target1.detach()
-        pred_target2 = pred_target2.detach()
-        weight_map = weight_map.detach()
-        D_out_t = interp_target(model_D(F.softmax(pred_target1 + pred_target2, dim = 1)))
-        #Adaptive Adversarial Loss
-        if(i_iter > PREHEAT_STEPS):
-            loss_D_t = weighted_bce_loss(D_out_t, 
-                                    Variable(torch.FloatTensor(D_out_t.data.size()).fill_(target_label)).cuda(
-                                        args.gpu), weight_map, Epsilon, Lambda_local)
+            _, _, feature_ext_target = model(images_t)
+        if (is_adv):
+            pred_target1 = interp_target(pred_target1)
+            pred_target2 = interp_target(pred_target2)
+            loss_norm_target = 0.00015 * get_L2norm_loss_self_driven(feature_ext_target) * damping_norm
+            loss_norm_target.backward(retain_graph=True)
         else:
-            loss_D_t = bce_loss(D_out_t,
-                          Variable(torch.FloatTensor(D_out_t.data.size()).fill_(target_label)).cuda(args.gpu))
-        loss_D_t.backward()
-        optimizer.step()
-        optimizer_D.step()
-        """
+            loss_norm_target = 0.00015 * get_L2norm_loss_self_driven(feature_ext_target) * damping_norm
+            loss_norm_target.backward()
+
+        if(is_adv):
+            weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
+            D_out = interp_target(model_D(F.softmax(pred_target1 + pred_target2, dim = 1)))
+            #Adaptive Adversarial Loss
+            if(i_iter > 0):
+                loss_adv = weighted_bce_loss(D_out,
+                                        Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(
+                                            args.gpu), weight_map, Epsilon, Lambda_local)
+            else:
+                loss_adv = bce_loss(D_out,
+                              Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(args.gpu))
+            loss_adv = loss_adv * Lambda_adv * damping
+            loss_adv.backward()
+
+        
+            #Weight Discrepancy Loss
+            W5 = None
+            W6 = None
+            if args.model == 'ResNet':
+                for (w5, w6) in zip(model.layer5.parameters(), model.layer6.parameters()):
+                    if W5 is None and W6 is None:
+                        W5 = w5.view(-1)
+                        W6 = w6.view(-1)
+                    else:
+                        W5 = torch.cat((W5, w5.view(-1)), 0)
+                        W6 = torch.cat((W6, w6.view(-1)), 0)
+            #w5 = w5.reshape([1,19])
+            #w6 = w6.reshape([1,19])
+            #print("w5 = {0}, w6 = {1}".format(w5, w6))
+            loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
+            #loss_weight = discrepancy_slice_wasserstein(w5, w6)
+            #print(loss_weight)
+            #loss_weight = (-loss_weight * Lambda_weight * damping + 0.1)
+            loss_weight = loss_weight * Lambda_weight * damping * 2
+            #print(loss_weight)
+            loss_weight.backward()
+
+
+
+            #======================================================================================
+            # train D
+            #======================================================================================
+            # Bring back Grads in D
+            for param in model_D.parameters():
+                param.requires_grad = True
+            # Train with Source
+            pred_source1 = pred_source1.detach()
+            pred_source2 = pred_source2.detach()
+            D_out_s = interp_source(model_D(F.softmax(pred_source1 + pred_source2, dim = 1)))
+            loss_D_s = bce_loss(D_out_s,
+                              Variable(torch.FloatTensor(D_out_s.data.size()).fill_(source_label)).cuda(args.gpu))
+            loss_D_s.backward()
+            # Train with Target
+            pred_target1 = pred_target1.detach()
+            pred_target2 = pred_target2.detach()
+            weight_map = weight_map.detach()
+            D_out_t = interp_target(model_D(F.softmax(pred_target1 + pred_target2, dim = 1)))
+            #Adaptive Adversarial Loss
+            if(i_iter > PREHEAT_STEPS):
+                loss_D_t = weighted_bce_loss(D_out_t,
+                                        Variable(torch.FloatTensor(D_out_t.data.size()).fill_(target_label)).cuda(
+                                            args.gpu), weight_map, Epsilon, Lambda_local)
+            else:
+                loss_D_t = bce_loss(D_out_t,
+                              Variable(torch.FloatTensor(D_out_t.data.size()).fill_(target_label)).cuda(args.gpu))
+            loss_D_t.backward()
+            optimizer.step()
+            optimizer_D.step()
+
+        else:
+            optimizer.step()
+
 
         print('exp = {}'.format(args.snapshot_dir))
-        print(
-            'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}'.format(
-                i_iter, args.num_steps, loss_seg))  # , loss_adv, loss_weight, loss_D_s, loss_D_t))
+        if(not is_adv):
+            print(
+                'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}'.format(
+                    i_iter, args.num_steps, loss_seg))  # , loss_adv, loss_weight, loss_D_s, loss_D_t))
 
-        f_loss = open(osp.join(args.snapshot_dir, 'loss.txt'), 'a')
-        f_loss.write('{0:.4f}\n'.format(
-            loss_seg))  # , loss_adv, loss_weight, loss_D_s, loss_D_t))
-        f_loss.close()
+            f_loss = open(osp.join(args.snapshot_dir, 'loss.txt'), 'a')
+            f_loss.write('{0:.4f}\n'.format(
+                loss_seg))  # , loss_adv, loss_weight, loss_D_s, loss_D_t))
+            f_loss.close()
 
-        if i_iter >= args.num_steps_stop - 1:
-            print('save model ...')
-            torch.save(model.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(args.num_steps) + '.pth'))
-            # torch.save(model_D.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(args.num_steps) + '_D.pth'))
-            # break
+            if i_iter >= args.num_steps_stop - 1:
+                print('save model ...')
+                torch.save(model.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(args.num_steps) + '.pth'))
+                # torch.save(model_D.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(args.num_steps) + '_D.pth'))
+                # break
 
-        if i_iter % args.save_pred_every == 0 and i_iter != 0:
-            print('taking snapshot ...')
-            torch.save(model.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(i_iter) + '.pth'))
-            # torch.save(model_D.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(i_iter) + '_D.pth'))
+            if i_iter % args.save_pred_every == 0 and i_iter != 0:
+                print('taking snapshot ...')
+                torch.save(model.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(i_iter) + '.pth'))
+                # torch.save(model_D.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(i_iter) + '_D.pth'))
+
+            else:
+
+                print(
+                    'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}, loss_adv = {3:.4f}, loss_weight = {4:.4f}, loss_D_s = {5:.4f}, loss_D_t = {6:.4f}'.format(
+                        i_iter, args.num_steps, loss_seg, loss_adv, loss_weight, loss_D_s, loss_D_t))
+
+                f_loss = open(osp.join(args.snapshot_dir, 'loss.txt'), 'a')
+                f_loss.write('{0:.4f} {1:.4f} {2:.4f} {3:.4f} {4:.4f}\n'.format(
+                    loss_seg, loss_adv, loss_weight, loss_D_s, loss_D_t))
+                f_loss.close()
+
+                if i_iter >= args.num_steps_stop - 1:
+                    print('save model ...')
+                    torch.save(model.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(args.num_steps) + '.pth'))
+                    torch.save(model_D.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(args.num_steps) + '_D.pth'))
+                    break
+
+                if i_iter % args.save_pred_every == 0 and i_iter != 0:
+                    print('taking snapshot ...')
+                    torch.save(model.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(i_iter) + '.pth'))
+                    torch.save(model_D.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(i_iter) + '_D.pth'))
+
+
 
 
 if __name__ == '__main__':
