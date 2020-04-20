@@ -3,7 +3,7 @@ import numpy as np
 import torch
 from torch.autograd import Variable
 from torch.utils import data, model_zoo
-from model.CLAN_G import Res_Deeplab
+from model.deeplabv2_G import Res_Deeplab
 from dataset.cityscapes_dataset import cityscapesDataSet
 import os
 from PIL import Image
