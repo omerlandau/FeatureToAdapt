@@ -1,6 +1,7 @@
 import numpy as np
 import argparse
 import json
+import PIL
 from PIL import Image
 from os.path import join
 
@@ -43,6 +44,7 @@ def compute_mIoU(gt_dir, pred_dir, devkit_dir=''):
     for ind in range(len(gt_imgs)):
         pred = np.array(Image.open(pred_imgs[ind]))
         label = np.array(Image.open(gt_imgs[ind]))
+        label = label.resize((640,1280),PIL.Image.BICUBIC)
         label = label_mapping(label, mapping)
         if len(label.flatten()) != len(pred.flatten()):
             print('Skipping: len(gt) = {:d}, len(pred) = {:d}, {:s}, {:s}'.format(len(label.flatten()), len(pred.flatten()), gt_imgs[ind], pred_imgs[ind]))
