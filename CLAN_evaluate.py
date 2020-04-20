@@ -191,7 +191,7 @@ def main():
                 output_f_2 = pred_c.data.cpu().numpy()
 
             if(flipp):
-                output_final = torch.Tensor(output_f).cuda(gpu0)#*0.44 + torch.Tensor(output_f_2).cuda(gpu0)*0.56
+                output_final = torch.Tensor(output_f_2).cuda(gpu0)#*0.44 + torch.Tensor(output_f_2).cuda(gpu0)*0.56
             else:
                 output_final = output_f
 
