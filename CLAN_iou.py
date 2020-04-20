@@ -45,7 +45,7 @@ def compute_mIoU(gt_dir, pred_dir, devkit_dir=''):
         pred = np.array(Image.open(pred_imgs[ind]))
         label = Image.open(gt_imgs[ind])
         label = label.resize(size=(640,1280), resample=PIL.Image.BICUBIC)
-        label.save("./resized/{0}_resized".format(gt_imgs[ind]), "JPEG")
+        label.save("./resized/{0}_resized".format(gt_imgs[ind][39:]), "JPEG")
         label = np.array(label)
         label = label_mapping(label, mapping)
         if len(label.flatten()) != len(pred.flatten()):
