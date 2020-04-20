@@ -1,9 +1,6 @@
 # Boosting Adaptation on Pixel Level Segmantation using Larger Norm Feature Extraction
 This is a [pytorch](http://pytorch.org/) implementation of [CLAN](http://openaccess.thecvf.com/content_CVPR_2019/papers/Luo_Taking_a_Closer_Look_at_Domain_Shift_Category-Level_Adversaries_for_CVPR_2019_paper.pdf).
 
-### Oral Presentation Video
-[![Watch the video](https://github.com/RoyalVane/CLAN/blob/master/gifs/video.png)](https://www.bilibili.com/video/av53561336/)
-
 ### Prerequisites
 - Python 3.6
 - GPU Memory >= 11G
