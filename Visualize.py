@@ -7,6 +7,7 @@ import os.path as osp
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 from model.deeplabv2_G import Res_Deeplab
+from torch.autograd import Variable
 import pickle as pkl
 
 
@@ -66,7 +67,8 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i, test_adaptati
                 imaget = imaget[:, :, ::-1]  # change to BGR
                 imaget -= IMG_MEAN
                 imaget = imaget.transpose((2, 0, 1))
-                _, _, imaget = model(torch.Variable(imaget).cuda(gpu0))
+                print(imaget)
+                _, _, imaget = model(Variable(imaget).cuda(gpu0))
                 imaget = imaget.data.cpu().numpy()
             else:
                 imaget = imaget.reshape((shape_x, shape_y * 3))
