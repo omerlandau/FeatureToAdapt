@@ -491,7 +491,7 @@ def main():
                   'munster/munster_000076_000019_gtFine_color.png',
                   'munster/munster_000091_000019_gtFine_color.png']
 
-    gta_images,gta_cmap = split_all_imgaes(gta_ids,gta_ids,'GTA',direct_i='./data/GTA5/images', direct_l='./data/GTA5/labels', test_adaptation=True, model_path='./snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000.pth', gpu0=1, cropsize=(1280,720))
+    gta_images,gta_cmap = split_all_imgaes(gta_ids,gta_ids,'GTA',direct_i='./data/GTA5/images', direct_l='./data/GTA5/labels', test_adaptation=True, model_path='./snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000.pth', gpu0=3, cropsize=(1280,720))
 
 
     with open("./Adapted_GTA_p20_exagg", 'wb') as pfile:
