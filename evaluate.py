@@ -118,7 +118,6 @@ def main():
     model.cuda(gpu0)
     model2.eval()
     model2.cuda(gpu0)
-    model2.cuda(gpu0)
     testloader = data.DataLoader(cityscapesDataSet(args.data_dir, args.data_list, crop_size=(1024, 512), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
                                     batch_size=1, shuffle=False, pin_memory=True)
 

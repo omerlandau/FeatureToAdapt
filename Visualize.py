@@ -13,7 +13,6 @@ import pickle as pkl
 
 def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i, test_adaptation, model_path, gpu0, cropsize):
     if(test_adaptation):
-        torch.no_grad()
         IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
         model = Res_Deeplab(num_classes=19)
         saved_state_dict = torch.load(model_path, map_location="cuda:{0}".format(gpu0))
@@ -69,7 +68,7 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i, test_adaptati
                 #imaget -= IMG_MEAN
                 imaget = imaget.transpose((2, 0, 1))
                 print(imaget)
-                _, _, imaget = model(Variable(torch.unsqueeze(torch.from_numpy(imaget),dim=0)).cuda(gpu0))
+                _, _, imaget = model(Variable(torch.unsqueeze(torch.from_numpy(imaget.copy()),dim=0)).cuda(gpu0))
                 imaget = imaget.data.cpu().numpy()
             else:
                 imaget = imaget.reshape((shape_x, shape_y * 3))
