@@ -66,7 +66,7 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i, test_adaptati
                 imaget = imaget[:, :, ::-1]  # change to BGR
                 imaget -= IMG_MEAN
                 imaget = imaget.transpose((2, 0, 1))
-                _, _, imaget = model(torch.Tensor(imaget).cuda(gpu0))
+                _, _, imaget = model(torch.Variable(imaget).cuda(gpu0))
                 imaget = imaget.data.cpu().numpy()
             else:
                 imaget = imaget.reshape((shape_x, shape_y * 3))
