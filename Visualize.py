@@ -60,6 +60,7 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i, test_adaptati
             imaget = imaget.flatten()
             imaget = imaget.reshape((shape_x, shape_y, 3))
             if(test_adaptation):
+                torch.no_grad()
                 imaget = np.asarray(imaget, np.uint8)
                 imaget = Image.fromarray(imaget)
                 imaget = imaget.resize(cropsize, Image.BICUBIC)
