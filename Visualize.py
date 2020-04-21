@@ -492,7 +492,7 @@ def main():
     gta_images,gta_cmap = Embedd_Data(gta_ids,gta_ids,'GTA',direct_i='./data/GTA5/images', direct_l='./data/GTA5/labels', test_adaptation=True, model_path='./snapshots/GTA2Cityscapes_only_norm/GTA5_100000.pth', gpu0=1, cropsize=(1280,720))
 
 
-    with open("./ONLY_NORM_Adapted_GTA_p20_exagg", 'wb') as pfile:
+    with open("./ONLY_NORM_Adapted_GTA_p20_exagg_orig_crop", 'wb') as pfile:
         pkl.dump(gta_images, pfile, protocol=3)
 
     with open("./GTA_cmap", 'wb') as pfile:
