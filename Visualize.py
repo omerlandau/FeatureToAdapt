@@ -6,10 +6,19 @@ from mpl_toolkits.mplot3d import Axes3D
 import os.path as osp
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
+from model.deeplabv2_G import Res_Deeplab
 import pickle as pkl
 
 
-def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
+def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i, test_adaptation, model_path, gpu0):
+    if(test_adaptation):
+        model = Res_Deeplab(num_classes=args.num_classes)
+        saved_state_dict = torch.load(args.restore_from, map_location="cuda:{0}".format(gpu0))
+        model.load_state_dict(saved_state_dict)
+        model.eval()
+        model.cuda(gpu0)
+
+
     r_images = []
     c=0
     print(len(images_p))
@@ -49,6 +58,8 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
             imaget = imaget.flatten()
             imaget = imaget.reshape((shape_x, shape_y, 3))
             imaget = imaget.reshape((shape_x, shape_y * 3))
+            if(test_adaptation):
+                _, _, imaget = model(torch.Tensor(imaget).cuda(gpu0))
             ipca = PCA(n_components=64, svd_solver='randomized').fit(imaget)
             imaget = ipca.transform(imaget)
             imaget = imaget.flatten()
@@ -58,12 +69,12 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i):
         if(c%10==0):
             print('done with:{0} images'.format(c))
 
-    pca = PCA(2)
+    pca = PCA(64)
     pca.fit(splitted_imagesdict)
     X = pca.transform(splitted_imagesdict)
     print("done PCA")
-    #tsne = TSNE(n_components=2, learning_rate=130, perplexity=30, angle=0.2, verbose=2, n_iter=6000, early_exaggeration=10).fit_transform(X)
-    return X, total_id
+    tsne = TSNE(n_components=2, learning_rate=130, perplexity=30, angle=0.2, verbose=2, n_iter=6000, early_exaggeration=10).fit_transform(X)
+    return tsne, total_id
 
 
 def main():
