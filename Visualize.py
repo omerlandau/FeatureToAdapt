@@ -60,6 +60,7 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i, test_adaptati
             imaget = imaget.reshape((shape_x, shape_y * 3))
             if(test_adaptation):
                 _, _, imaget = model(torch.Tensor(imaget).cuda(gpu0))
+                imaget =imaget.data.cpu().numpy()
             ipca = PCA(n_components=64, svd_solver='randomized').fit(imaget)
             imaget = ipca.transform(imaget)
             imaget = imaget.flatten()
@@ -478,7 +479,7 @@ def main():
     gta_images,gta_cmap = split_all_imgaes(gta_ids,gta_ids,'GTA',direct_i='./data/GTA5/images', direct_l='./data/GTA5/labels')
 
 
-    with open("./GTA_only_PCA", 'wb') as pfile:
+    with open("./Adapted_GTA_p20_exagg", 'wb') as pfile:
         pkl.dump(gta_images, pfile, protocol=3)
 
     with open("./GTA_cmap", 'wb') as pfile:
@@ -489,7 +490,7 @@ def main():
     city_images, city_cmap = split_all_imgaes(city_ids_i,city_ids_l,type='city', direct_l='./data/CitySpaces/gtFine/val', direct_i='./data/CitySpaces/leftImg8bit/val')
 
 
-    with open("./City_only_PCA", 'wb') as pfile:
+    with open("./Adapted_City_p20_exagg", 'wb') as pfile:
         pkl.dump(city_images, pfile, protocol=3)
 
     with open("./City_cmap", 'wb') as pfile:
