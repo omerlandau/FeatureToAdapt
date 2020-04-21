@@ -10,8 +10,9 @@ from model.deeplabv2_G import Res_Deeplab
 import pickle as pkl
 
 
-def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i, test_adaptation, model_path, gpu0):
+def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i, test_adaptation, model_path, gpu0, cropsize):
     if(test_adaptation):
+        IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
         model = Res_Deeplab(num_classes=19)
         saved_state_dict = torch.load(model_path, map_location="cuda:{0}".format(gpu0))
         model.load_state_dict(saved_state_dict)
@@ -57,10 +58,18 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i, test_adaptati
             imaget = imaget.T
             imaget = imaget.flatten()
             imaget = imaget.reshape((shape_x, shape_y, 3))
-            imaget = imaget.reshape((shape_x, shape_y * 3))
             if(test_adaptation):
+                imaget = np.asarray(imaget, np.uint8)
+                imaget = Image.fromattay(imaget)
+                imaget = imaget.resize(cropsize, Image.BICUBIC)
+                imaget = np.asarray(imaget, np.float32)
+                imaget = imaget[:, :, ::-1]  # change to BGR
+                imaget -= IMG_MEAN
+                imaget = imaget.transpose((2, 0, 1))
                 _, _, imaget = model(torch.Tensor(imaget).cuda(gpu0))
-                imaget =imaget.data.cpu().numpy()
+                imaget = imaget.data.cpu().numpy()
+            else:
+                imaget = imaget.reshape((shape_x, shape_y * 3))
             ipca = PCA(n_components=64, svd_solver='randomized').fit(imaget)
             imaget = ipca.transform(imaget)
             imaget = imaget.flatten()
@@ -476,7 +485,7 @@ def main():
                   'munster/munster_000076_000019_gtFine_color.png',
                   'munster/munster_000091_000019_gtFine_color.png']
 
-    gta_images,gta_cmap = split_all_imgaes(gta_ids,gta_ids,'GTA',direct_i='./data/GTA5/images', direct_l='./data/GTA5/labels', test_adaptation=True, model_path='./snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000.pth', gpu0=1)
+    gta_images,gta_cmap = split_all_imgaes(gta_ids,gta_ids,'GTA',direct_i='./data/GTA5/images', direct_l='./data/GTA5/labels', test_adaptation=True, model_path='./snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000.pth', gpu0=1, cropsize=(1280,720))
 
 
     with open("./Adapted_GTA_p20_exagg", 'wb') as pfile:
@@ -487,7 +496,7 @@ def main():
 
     print('Dumped GTA pickle')
 
-    city_images, city_cmap = split_all_imgaes(city_ids_i,city_ids_l,type='city', direct_l='./data/CitySpaces/gtFine/val', direct_i='./data/CitySpaces/leftImg8bit/val', test_adaptation=True, model_path='./snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000.pth', gpu0=1)
+    city_images, city_cmap = split_all_imgaes(city_ids_i,city_ids_l,type='city', direct_l='./data/CitySpaces/gtFine/val', direct_i='./data/CitySpaces/leftImg8bit/val', test_adaptation=True, model_path='./snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000.pth', gpu0=1, cropsize=(1024,512))
 
 
     with open("./Adapted_City_p20_exagg", 'wb') as pfile:
