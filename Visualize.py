@@ -73,6 +73,9 @@ def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i, test_adaptati
             else:
                 imaget = imaget.reshape((shape_x, shape_y * 3))
             print(imaget.shape)
+            imaget = np.array(torch.squeeze(torch.Tensor(imaget),0))
+            imaget = imaget.reshape((imaget.shape[0],imaget.shape[1]*imaget.shape[2]))
+            print(imaget.shape)
             ipca = PCA(n_components=64, svd_solver='randomized').fit(imaget)
             imaget = ipca.transform(imaget)
             imaget = imaget.flatten()
