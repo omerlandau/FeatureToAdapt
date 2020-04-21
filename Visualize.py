@@ -87,7 +87,7 @@ def Embedd_Data(images_p, labels_p, type, direct_l, direct_i, test_adaptation, m
     pca.fit(splitted_imagesdict)
     X = pca.transform(splitted_imagesdict)
     print("done PCA")
-    tsne = TSNE(n_components=2, learning_rate=130, perplexity=30, angle=0.2, verbose=2, n_iter=6000, early_exaggeration=10).fit_transform(X)
+    tsne = TSNE(n_components=2, learning_rate=130, perplexity=20, angle=0.2, verbose=2, n_iter=6000, early_exaggeration=20).fit_transform(X)
     return tsne, total_id
 
 
@@ -489,10 +489,10 @@ def main():
                   'munster/munster_000076_000019_gtFine_color.png',
                   'munster/munster_000091_000019_gtFine_color.png']
 
-    gta_images,gta_cmap = Embedd_Data(gta_ids,gta_ids,'GTA',direct_i='./data/GTA5/images', direct_l='./data/GTA5/labels', test_adaptation=True, model_path='./snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000.pth', gpu0=0, cropsize=(1024,512))
+    gta_images,gta_cmap = Embedd_Data(gta_ids,gta_ids,'GTA',direct_i='./data/GTA5/images', direct_l='./data/GTA5/labels', test_adaptation=True, model_path='./snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000.pth', gpu0=3, cropsize=(1024,512))
 
 
-    with open("./CLAN_AndNORM_Adapted_same_crop_GTA_p20_exagg", 'wb') as pfile:
+    with open("./CLAN_AndNORM_Adapted_same_crop_GTA_p20_exagg_20", 'wb') as pfile:
         pkl.dump(gta_images, pfile, protocol=3)
 
     with open("./GTA_cmap", 'wb') as pfile:
@@ -500,10 +500,10 @@ def main():
 
     print('Dumped GTA pickle')
 
-    city_images, city_cmap = Embedd_Data(city_ids_i,city_ids_l,type='city', direct_l='./data/CitySpaces/gtFine/val', direct_i='./data/CitySpaces/leftImg8bit/val', test_adaptation=True, model_path='./snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000.pth', gpu0=0, cropsize=(1024,512))
+    city_images, city_cmap = Embedd_Data(city_ids_i,city_ids_l,type='city', direct_l='./data/CitySpaces/gtFine/val', direct_i='./data/CitySpaces/leftImg8bit/val', test_adaptation=True, model_path='./snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000.pth', gpu0=3, cropsize=(1024,512))
 
 
-    with open("./CLAN_AndNORM_Adapted_same_crop_City_p20_exagg", 'wb') as pfile:
+    with open("./CLAN_AndNORM_Adapted_same_crop_City_p20_exagg_20", 'wb') as pfile:
         pkl.dump(city_images, pfile, protocol=3)
 
     with open("./City_cmap", 'wb') as pfile:
