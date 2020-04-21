@@ -489,10 +489,10 @@ def main():
                   'munster/munster_000076_000019_gtFine_color.png',
                   'munster/munster_000091_000019_gtFine_color.png']
 
-    gta_images,gta_cmap = Embedd_Data(gta_ids,gta_ids,'GTA',direct_i='./data/GTA5/images', direct_l='./data/GTA5/labels', test_adaptation=True, model_path='./model/GTA5_82000_orig_clan.pth', gpu0=1, cropsize=(1280,720))
+    gta_images,gta_cmap = Embedd_Data(gta_ids,gta_ids,'GTA',direct_i='./data/GTA5/images', direct_l='./data/GTA5/labels', test_adaptation=True, model_path='./snapshots/GTA2Cityscapes_only_norm/GTA5_100000.pth', gpu0=1, cropsize=(1280,720))
 
 
-    with open("./Orig_CLAN_Adapted_GTA_p20_exagg", 'wb') as pfile:
+    with open("./ONLY_NORM_Adapted_GTA_p20_exagg", 'wb') as pfile:
         pkl.dump(gta_images, pfile, protocol=3)
 
     with open("./GTA_cmap", 'wb') as pfile:
@@ -500,10 +500,10 @@ def main():
 
     print('Dumped GTA pickle')
 
-    city_images, city_cmap = Embedd_Data(city_ids_i,city_ids_l,type='city', direct_l='./data/CitySpaces/gtFine/val', direct_i='./data/CitySpaces/leftImg8bit/val', test_adaptation=True, model_path='./model/GTA5_82000_orig_clan.pth', gpu0=1, cropsize=(1024,512))
+    city_images, city_cmap = Embedd_Data(city_ids_i,city_ids_l,type='city', direct_l='./data/CitySpaces/gtFine/val', direct_i='./data/CitySpaces/leftImg8bit/val', test_adaptation=True, model_path='./snapshots/GTA2Cityscapes_only_norm/GTA5_100000.pth', gpu0=1, cropsize=(1024,512))
 
 
-    with open("./ORIG_CLAN_Adapted_City_p20_exagg", 'wb') as pfile:
+    with open("./ONLY_NORM_Adapted_City_p20_exagg", 'wb') as pfile:
         pkl.dump(city_images, pfile, protocol=3)
 
     with open("./City_cmap", 'wb') as pfile:
