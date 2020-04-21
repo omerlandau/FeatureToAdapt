@@ -12,7 +12,7 @@ import pickle as pkl
 
 def split_all_imgaes(images_p, labels_p, type, direct_l, direct_i, test_adaptation, model_path, gpu0):
     if(test_adaptation):
-        model = Res_Deeplab(num_classes=args.num_classes)
+        model = Res_Deeplab(num_classes=19)
         saved_state_dict = torch.load(model_path, map_location="cuda:{0}".format(gpu0))
         model.load_state_dict(saved_state_dict)
         model.eval()
