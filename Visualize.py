@@ -83,12 +83,12 @@ def Embedd_Data(images_p, labels_p, type, direct_l, direct_i, test_adaptation, m
         if(c%10==0):
             print('done with:{0} images'.format(c))
 
-    pca = PCA(64)
+    pca = PCA(2)
     pca.fit(splitted_imagesdict)
     X = pca.transform(splitted_imagesdict)
     print("done PCA")
-    tsne = TSNE(n_components=2, learning_rate=130, perplexity=20, angle=0.2, verbose=2, n_iter=6000, early_exaggeration=20).fit_transform(X)
-    return tsne, total_id
+    #tsne = TSNE(n_components=2, learning_rate=130, perplexity=20, angle=0.2, verbose=2, n_iter=6000, early_exaggeration=20).fit_transform(X)
+    return X, total_id
 
 
 def main():
@@ -492,7 +492,7 @@ def main():
     gta_images,gta_cmap = Embedd_Data(gta_ids,gta_ids,'GTA',direct_i='./data/GTA5/images', direct_l='./data/GTA5/labels', test_adaptation=True, model_path='./snapshots/GTA2Cityscapes_only_norm/GTA5_100000.pth', gpu0=4, cropsize=(1024,512))
 
 
-    with open("./ONLY_NORM_Adapted_same_crop_GTA_p20_exagg_20", 'wb') as pfile:
+    with open("./PCA_GTA_norm_adapted", 'wb') as pfile:
         pkl.dump(gta_images, pfile, protocol=3)
 
     with open("./GTA_cmap", 'wb') as pfile:
@@ -503,7 +503,7 @@ def main():
     city_images, city_cmap = Embedd_Data(city_ids_i,city_ids_l,type='city', direct_l='./data/CitySpaces/gtFine/val', direct_i='./data/CitySpaces/leftImg8bit/val', test_adaptation=True, model_path='./snapshots/GTA2Cityscapes_only_norm/GTA5_100000.pth', gpu0=4, cropsize=(1024,512))
 
 
-    with open("./ONLY_NORM_Adapted_same_crop_City_p20_exagg_20", 'wb') as pfile:
+    with open("./PCA_CITY_norm_adapted", 'wb') as pfile:
         pkl.dump(city_images, pfile, protocol=3)
 
     with open("./City_cmap", 'wb') as pfile:
