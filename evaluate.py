@@ -129,9 +129,7 @@ def main():
             if index % 100 == 0:
                 print('%d processd' % index)
             image, _, _, name = batch
-            print(image.shape)
             output1, output2 , _ = model(Variable(image).cuda(gpu0))
-            print(output1.shape)
             if(multi):
                 _, output2_2, _ = model2(Variable(image).cuda(gpu0))
                 output_f_2 = output2_2
