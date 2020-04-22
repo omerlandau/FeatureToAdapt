@@ -53,9 +53,9 @@ def Embedd_Data(images_p, labels_p, type, direct_l, direct_i, test_adaptation, m
             mapfigx = np.copy(mapfig)
             mapfigy = np.copy(mapfig)
             mapfigz = np.copy(mapfig)
-            np.copyto(imaget[0], 255, where=np.invert(mapfigx))
-            np.copyto(imaget[1], 255, where=np.invert(mapfigy))
-            np.copyto(imaget[2], 255, where=np.invert(mapfigz))
+            np.copyto(imaget[0], 0, where=np.invert(mapfigx))
+            np.copyto(imaget[1], 0, where=np.invert(mapfigy))
+            np.copyto(imaget[2], 0, where=np.invert(mapfigz))
             imaget = imaget.T
             imaget = imaget.flatten()
             imaget = imaget.reshape((shape_x, shape_y, 3))
@@ -66,7 +66,7 @@ def Embedd_Data(images_p, labels_p, type, direct_l, direct_i, test_adaptation, m
                     imaget = imaget.resize(cropsize, Image.BICUBIC)
                     imaget = np.asarray(imaget, np.float32)
                     imaget = imaget[:, :, ::-1]  # change to BGR
-                    imaget -= IMG_MEAN
+                    #imaget -= IMG_MEAN
                     imaget = imaget.transpose((2, 0, 1))
                     _, _, imaget = model(Variable(torch.unsqueeze(torch.from_numpy(imaget.copy()),dim=0)).cuda(gpu0))
                     imaget = imaget.data.cpu().numpy()
