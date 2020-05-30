@@ -29,6 +29,7 @@ The data folder is structured as follows:
 
 ### Train
 ```
+python train.py --gpu 6 --adv True --snapshot-dir ./GTA_snapshots/GTA2Cityscapes_adv 
 ```
 
 ### Evaluate
