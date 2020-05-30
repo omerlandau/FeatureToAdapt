@@ -53,7 +53,7 @@ python iou_bulk.py
 
 ### Visualization Results
 <p align="left">
-	<img src="https://github.com/omerlandau/FeatureToAdapt/blob/master/results_visualization.png"  width="840" height="420" alt="(a)"/>
+	<img src="https://github.com/omerlandau/FeatureToAdapt/blob/master/results_visualization.png"  alt="(a)"/>
 
 </p>
 
