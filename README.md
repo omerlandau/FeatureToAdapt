@@ -43,7 +43,7 @@ pretrained models are available via [Google Drive]( https://drive.google.com/ope
 python iou.py ./data/Cityscapes/gtFine/val result/GTA2Cityscapes_100000
 ```
 
-#### Tip: The best-performance model might not be the final one in the last epoch. If you want to evaluate every saved models in bulk, please use CLAN_evaluate_bulk.py and CLAN_iou_bulk.py, the result will be saved in an Excel sheet.
+#### In order to Evaluate and compute iou of number of models you may use evaluate_bulk.py and iou_bulk.py, the results will be saved in a csv format.
 ```
 python evaluate_bulk.py
 python iou_bulk.py
