@@ -34,9 +34,11 @@ python train.py --gpu 6 --adv True --snapshot-dir ./GTA_snapshots/GTA2Cityscapes
 
 ### Evaluate
 ```
-
+python evaluate.py --gpu=2 --restore-from-second "./model/GTA5_82000_orig_clan.pth" --restore-from ./snapshots/GTA2Cityscapes_only_norm/GTA5_100000.pth --multi False --flip True --save ./GTA_results/GTA2Cityscapes_ORIG_CLAN_and_NORM_flip_44_56
 ```
-pretrained models are available via [Google Drive]( https://drive.google.com/open?id=1Hl7r6fIbNfyA9A8wGUJIMOwzXVQ61ik8 )
+#### Restore from second and multi are for ensemble use. flip means using the output and it's flipped version for prediction (may boost results).
+
+pretrained models are available via [Google Drive]( https://drive.google.com/drive/folders/1LdTSOw80Nd5fHsMiosP187QDo5LR6Rnf?usp=sharing )
 
 ### Compute IoU
 ```
