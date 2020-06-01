@@ -81,5 +81,5 @@ python iou_bulk.py
 ```
 
 
-#### This code is heavily borrowed from the baseline [AdaptSegNet]( https://github.com/wasidennis/AdaptSegNet) and [CLAN]( https://github.com/RoyalVane/CLAN). We also used in some parts pretrained model by [MaxSquareLoss](https://github.com/ZJULearning/MaxSquareLoss)
+#### This code is heavily borrowed from the baselines [AdaptSegNet]( https://github.com/wasidennis/AdaptSegNet) and [CLAN]( https://github.com/RoyalVane/CLAN). We also used in some parts pretrained model by [MaxSquareLoss](https://github.com/ZJULearning/MaxSquareLoss)
 
