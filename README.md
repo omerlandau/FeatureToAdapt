@@ -59,7 +59,7 @@ python evaluate.py --gpu=2 --ensemble True --restore-from-second "$second_model_
 ```
 - Restore from second, multi and ensemble flags are for ensemble use only. If ensemble flag is set to False, only first (--restore-from) model would be evaluated and multi \ restore-from-second flags would be ignored. 
 
-- Multi flag reffers to models which uses multi backbone layers during training s.e MaxSquareLoss and AdaptSegNet models. 
+- Multi flag reffers to models which uses multi backbone layers during training f.e MaxSquareLoss and AdaptSegNet models. 
 
 - If using multi model for ensembling, you should be using it as second one (--restore-from-second). 
 
