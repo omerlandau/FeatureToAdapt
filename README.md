@@ -16,7 +16,7 @@ This is a [pytorch](http://pytorch.org/) implementation of [Feature To Adapt](ht
 
 - Download [The imagenet pretraind model]( https://drive.google.com/open?id=13kjtX481LdtgJcpqD3oROabZyhGLSBm2 )
 
-- Pretrained models are available via  [Google Drive](https://drive.google.com/drive/folders/1LdTSOw80Nd5fHsMiosP187QDo5LR6Rnf?usp=sharing )
+- Our pretrained models are available via  [Google Drive](https://drive.google.com/drive/folders/1LdTSOw80Nd5fHsMiosP187QDo5LR6Rnf?usp=sharing )
 
 The data folder is structured as follows:
 ```
