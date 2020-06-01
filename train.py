@@ -38,7 +38,6 @@ IGNORE_LABEL = 255
 MOMENTUM = 0.9
 NUM_CLASSES = 19
 RESTORE_FROM = './model/DeepLab_resnet_pretrained_init-f81d91e8.pth'
-# RESTORE_FROM = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000.pth'
 # RESTORE_FROM = './snapshots/GTA2Cityscapes_CVPR_Syn0820_Wg00005weight005_dampingx2/GTA5_36000.pth' #For retrain
 # RESTORE_FROM_D = './snapshots/GTA2Cityscapes_norm_00015_Damping15_normal_weight_loss_restore_from_40000_G_38_D_numsteps_fixed/GTA5_40000_D.pth' #For retrain
 
@@ -67,14 +66,6 @@ if SOURCE == 'GTA5':
     Lambda_adv = 0.001
     Lambda_local = 40
     Epsilon = 0.4
-# elif SOURCE == 'SYNTHIA':
-#    INPUT_SIZE_SOURCE = '1280,760'
-#    DATA_DIRECTORY = './data/SYNTHIA/RAND_CITYSCAPES'
-#    DATA_LIST_PATH = './dataset/synthia_list/train.txt'
-#    Lambda_weight = 0.01
-#    Lambda_adv = 0.001
-#    Lambda_local = 10
-#    Epsilon = 0.4
 
 INPUT_SIZE_TARGET = '1024,512'
 DATA_DIRECTORY_TARGET = './data/CitySpaces'
@@ -168,6 +159,9 @@ def sort_rows(matrix, num_rows):
 
 
 def discrepancy_slice_wasserstein(p1, p2):
+    """
+    This is an implementation of Slice Wasserstein discrepancy loss, it encourage discrepancy between 2 given tensors
+    """
     s = p1.size()
     print(p1.size())
     print(p2.size())
@@ -186,6 +180,12 @@ def discrepancy_slice_wasserstein(p1, p2):
 
 
 def get_L2norm_loss_self_driven(x):
+    """
+    :param x: features tensor
+    :return: l2 norm loss
+
+    This function implements the stepwise version of L2norm loss presented in the article.
+    """
     radius = x.norm(p=2, dim=1).detach()
     assert radius.requires_grad == False
     radius = radius + 0.12
@@ -252,11 +252,10 @@ def main():
 
     is_adv = False
 
-    if(args.adv == 'True'):
+    if (args.adv == 'True'):
         is_adv = True
     else:
         is_adv = False
-
 
     # Create Network
     model = Res_Deeplab(num_classes=args.num_classes)
@@ -283,14 +282,14 @@ def main():
 
     # Init D
 
-    if(is_adv):
+    if (is_adv):
         model_D = FCDiscriminator(num_classes=args.num_classes)
     # =============================================================================
     #    #for retrain
     #    saved_state_dict_D = torch.load(RESTORE_FROM_D, map_location="cuda:{0}".format(args.gpu))
     #    model_D.load_state_dict(saved_state_dict_D)
     # =============================================================================
-    if(is_adv):
+    if (is_adv):
         model_D.train()
         model_D.cuda(args.gpu)
 
@@ -320,7 +319,7 @@ def main():
                           lr=args.learning_rate, momentum=args.momentum, weight_decay=args.weight_decay)
     optimizer.zero_grad()
 
-    if(is_adv):
+    if (is_adv):
         optimizer_D = optim.Adam(model_D.parameters(), lr=args.learning_rate_D, betas=(0.9, 0.99))
         optimizer_D.zero_grad()
 
@@ -338,7 +337,7 @@ def main():
 
         optimizer.zero_grad()
         adjust_learning_rate(optimizer, i_iter)
-        if(is_adv):
+        if (is_adv):
             optimizer_D.zero_grad()
             adjust_learning_rate_D(optimizer_D, i_iter)
 
@@ -350,7 +349,7 @@ def main():
         # ======================================================================================
 
         # Remove Grads in D
-        if(is_adv):
+        if (is_adv):
             for param in model_D.parameters():
                 param.requires_grad = False
 
@@ -378,7 +377,7 @@ def main():
         _, batch = next(targetloader_iter)
         images_t, _, _, _ = batch
         images_t = Variable(images_t).cuda(args.gpu)
-        if(is_adv):
+        if (is_adv):
             pred_target1, pred_target2, feature_ext_target = model(images_t)
         else:
             _, _, feature_ext_target = model(images_t)
@@ -391,22 +390,21 @@ def main():
             loss_norm_target = 0.00015 * get_L2norm_loss_self_driven(feature_ext_target) * damping_norm
             loss_norm_target.backward()
 
-        if(is_adv):
-            weight_map = weightmap(F.softmax(pred_target1, dim = 1), F.softmax(pred_target2, dim = 1))
-            D_out = interp_target(model_D(F.softmax(pred_target1 + pred_target2, dim = 1)))
-            #Adaptive Adversarial Loss
-            if(i_iter > 0):
+        if (is_adv):
+            weight_map = weightmap(F.softmax(pred_target1, dim=1), F.softmax(pred_target2, dim=1))
+            D_out = interp_target(model_D(F.softmax(pred_target1 + pred_target2, dim=1)))
+            # Adaptive Adversarial Loss
+            if (i_iter > 0):
                 loss_adv = weighted_bce_loss(D_out,
-                                        Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(
-                                            args.gpu), weight_map, Epsilon, Lambda_local)
+                                             Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(
+                                                 args.gpu), weight_map, Epsilon, Lambda_local)
             else:
                 loss_adv = bce_loss(D_out,
-                              Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(args.gpu))
+                                    Variable(torch.FloatTensor(D_out.data.size()).fill_(source_label)).cuda(args.gpu))
             loss_adv = loss_adv * Lambda_adv * damping
             loss_adv.backward()
 
-        
-            #Weight Discrepancy Loss
+            # Weight Discrepancy Loss
             W5 = None
             W6 = None
             if args.model == 'ResNet':
@@ -417,45 +415,48 @@ def main():
                     else:
                         W5 = torch.cat((W5, w5.view(-1)), 0)
                         W6 = torch.cat((W6, w6.view(-1)), 0)
-            #w5 = w5.reshape([1,19])
-            #w6 = w6.reshape([1,19])
-            #print("w5 = {0}, w6 = {1}".format(w5, w6))
-            loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1) # +1 is for a positive loss
-            #loss_weight = discrepancy_slice_wasserstein(w5, w6)
-            #print(loss_weight)
-            #loss_weight = (-loss_weight * Lambda_weight * damping + 0.1)
+
+            # for wasserstein discrepancy instead of cosine similarity:
+
+            # w5 = w5.reshape([1,19])
+            # w6 = w6.reshape([1,19])
+            # print("w5 = {0}, w6 = {1}".format(w5, w6))
+            # loss_weight = discrepancy_slice_wasserstein(w5, w6)
+            # print(loss_weight)
+            # loss_weight = (-loss_weight * Lambda_weight * damping + 0.1)
+
+            # cosine similarity:
+
+            loss_weight = (torch.matmul(W5, W6) / (torch.norm(W5) * torch.norm(W6)) + 1)  # +1 is for a positive loss
             loss_weight = loss_weight * Lambda_weight * damping * 2
-            #print(loss_weight)
             loss_weight.backward()
 
-
-
-            #======================================================================================
+            # ======================================================================================
             # train D
-            #======================================================================================
+            # ======================================================================================
             # Bring back Grads in D
             for param in model_D.parameters():
                 param.requires_grad = True
             # Train with Source
             pred_source1 = pred_source1.detach()
             pred_source2 = pred_source2.detach()
-            D_out_s = interp_source(model_D(F.softmax(pred_source1 + pred_source2, dim = 1)))
+            D_out_s = interp_source(model_D(F.softmax(pred_source1 + pred_source2, dim=1)))
             loss_D_s = bce_loss(D_out_s,
-                              Variable(torch.FloatTensor(D_out_s.data.size()).fill_(source_label)).cuda(args.gpu))
+                                Variable(torch.FloatTensor(D_out_s.data.size()).fill_(source_label)).cuda(args.gpu))
             loss_D_s.backward()
             # Train with Target
             pred_target1 = pred_target1.detach()
             pred_target2 = pred_target2.detach()
             weight_map = weight_map.detach()
-            D_out_t = interp_target(model_D(F.softmax(pred_target1 + pred_target2, dim = 1)))
-            #Adaptive Adversarial Loss
-            if(i_iter > PREHEAT_STEPS):
+            D_out_t = interp_target(model_D(F.softmax(pred_target1 + pred_target2, dim=1)))
+            # Adaptive Adversarial Loss
+            if (i_iter > PREHEAT_STEPS):
                 loss_D_t = weighted_bce_loss(D_out_t,
-                                        Variable(torch.FloatTensor(D_out_t.data.size()).fill_(target_label)).cuda(
-                                            args.gpu), weight_map, Epsilon, Lambda_local)
+                                             Variable(torch.FloatTensor(D_out_t.data.size()).fill_(target_label)).cuda(
+                                                 args.gpu), weight_map, Epsilon, Lambda_local)
             else:
                 loss_D_t = bce_loss(D_out_t,
-                              Variable(torch.FloatTensor(D_out_t.data.size()).fill_(target_label)).cuda(args.gpu))
+                                    Variable(torch.FloatTensor(D_out_t.data.size()).fill_(target_label)).cuda(args.gpu))
             loss_D_t.backward()
             optimizer.step()
             optimizer_D.step()
@@ -463,9 +464,8 @@ def main():
         else:
             optimizer.step()
 
-
         print('exp = {}'.format(args.snapshot_dir))
-        if(not is_adv):
+        if (not is_adv):
             print(
                 'iter = {0:6d}/{1:6d}, loss_seg = {2:.4f}'.format(
                     i_iter, args.num_steps, loss_seg))  # , loss_adv, loss_weight, loss_D_s, loss_D_t))
@@ -478,13 +478,10 @@ def main():
             if i_iter >= args.num_steps_stop - 1:
                 print('save model ...')
                 torch.save(model.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(args.num_steps) + '.pth'))
-                # torch.save(model_D.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(args.num_steps) + '_D.pth'))
-                # break
 
             if i_iter % args.save_pred_every == 0 and i_iter != 0:
                 print('taking snapshot ...')
                 torch.save(model.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(i_iter) + '.pth'))
-                # torch.save(model_D.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(i_iter) + '_D.pth'))
 
             else:
 
@@ -500,15 +497,14 @@ def main():
                 if i_iter >= args.num_steps_stop - 1:
                     print('save model ...')
                     torch.save(model.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(args.num_steps) + '.pth'))
-                    torch.save(model_D.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(args.num_steps) + '_D.pth'))
+                    torch.save(model_D.state_dict(),
+                               osp.join(args.snapshot_dir, 'GTA5_' + str(args.num_steps) + '_D.pth'))
                     break
 
                 if i_iter % args.save_pred_every == 0 and i_iter != 0:
                     print('taking snapshot ...')
                     torch.save(model.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(i_iter) + '.pth'))
                     torch.save(model_D.state_dict(), osp.join(args.snapshot_dir, 'GTA5_' + str(i_iter) + '_D.pth'))
-
-
 
 
 if __name__ == '__main__':
