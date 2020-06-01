@@ -67,7 +67,7 @@ python evaluate.py --gpu=2 --ensemble True --restore-from-second "$second_model_
 
 - Flip means using the image and it's flipped version for prediction (may improve results). 
 
-pretrained models are available via [Google Drive]( https://drive.google.com/drive/folders/1LdTSOw80Nd5fHsMiosP187QDo5LR6Rnf?usp=sharing )
+reminder: pretrained models are available via [Google Drive]( https://drive.google.com/drive/folders/1LdTSOw80Nd5fHsMiosP187QDo5LR6Rnf?usp=sharing )
 
 ### Compute IoU
 ```
