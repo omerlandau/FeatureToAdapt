@@ -12,6 +12,13 @@ import pickle as pkl
 
 
 def Embedd_Data(images_p, labels_p, type, direct_l, direct_i, test_adaptation, model_path, gpu0, cropsize):
+
+    """
+    This function takes pictures and their labels, split them in to different classes - according to the labels.
+    and then embed the results into R2 - using PCA only or Feature Extraction of trained model and then PCA. the purpose
+    is mainly to study the correlation between classes of both source and target domain, pre and post adaptation (using the trained
+     model and PCA as mentioned).
+    """
     if(test_adaptation):
         IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
         model = Res_Deeplab(num_classes=19)
