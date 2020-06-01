@@ -10,16 +10,16 @@ from PIL import Image
 import torch.nn.functional as F
 import torch.nn as nn
 
-IMG_MEAN = np.array((104.00698793,116.66876762,122.67891434), dtype=np.float32)
+IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
 
 DATA_DIRECTORY = './data/CitySpaces'
 DATA_LIST_PATH = './dataset/cityscapes_list/val.txt'
 SAVE_PATH = './result/cityscapes'
 
-MODEL = 'ResNet' #Vgg
+MODEL = 'ResNet'  # Vgg
 IGNORE_LABEL = 255
 NUM_CLASSES = 19
-NUM_STEPS = 500 # Number of images in the validation set.
+NUM_STEPS = 500  # Number of images in the validation set.
 RESTORE_FROM = ''
 SET = 'val'
 
@@ -60,17 +60,27 @@ def get_arguments():
                         help="Where restore model parameters from.")
     parser.add_argument("--restore-from-second", type=str, default=RESTORE_FROM,
                         help="Where restore model parameters from.")
-    parser.add_argument("--multi", type=str, default=False,
-                        help="is restored model multi or not.")
+    parser.add_argument("--multi", type=str, default='False',
+                        help="is restored model multi or not - multi is used for models such as MaxSquareLoss which uses two different backbone layers to train the classifiers.")
     parser.add_argument("--gpu", type=int, default=0,
                         help="choose gpu device.")
-    parser.add_argument("--flip", type=str, default=False,
+    parser.add_argument("--flip", type=str, default='False',
                         help="choose gpu device.")
     parser.add_argument("--set", type=str, default=SET,
                         help="choose evaluation set.")
     parser.add_argument("--save", type=str, default=SAVE_PATH,
                         help="Path to save result.")
+    parser.add_argument("--ensemble", type=str, default='False', help="Use two models in ensemble mode")
     return parser.parse_args()
+
+
+def flip(x, dim):
+    # flipping tensor
+    dim = x.dim() + dim if dim < 0 else dim
+    inds = tuple(slice(None, None) if i != dim
+                 else x.new(torch.arange(x.size(i) - 1, -1, -1).tolist()).long()
+                 for i in range(x.dim()))
+    return x[inds]
 
 
 def main():
@@ -80,46 +90,56 @@ def main():
 
     gpu0 = args.gpu
 
-    if(args.multi == 'True'):
+    if (args.ensemble == 'True'):
+        ensemble = True
+    else:
+        ensemble = False
+
+    if (args.multi == 'True'):
         multi = True
     else:
         multi = False
-    if(args.flip == 'True'):
+    if (args.flip == 'True'):
         flipp = True
     else:
         flipp = False
 
     if not os.path.exists(args.save):
         os.makedirs(args.save)
-    
+
     if args.model == 'ResNet':
         model = Res_Deeplab(num_classes=args.num_classes)
-        if(multi):
-            model2 = Res_Deeplab(num_classes=args.num_classes, multi=multi)
-        else:
-            model2 = Res_Deeplab(num_classes=args.num_classes)
-    
-    if args.restore_from[:4] == 'http' :
+        if(ensemble):
+            if (multi):
+                model2 = Res_Deeplab(num_classes=args.num_classes, multi=multi)
+            else:
+                model2 = Res_Deeplab(num_classes=args.num_classes)
+
+    if args.restore_from[:4] == 'http':
         saved_state_dict = model_zoo.load_url(args.restore_from)
     else:
         saved_state_dict = torch.load(args.restore_from, map_location="cuda:{0}".format(args.gpu))
-        saved_state_dict_2 = torch.load(args.restore_from_second, map_location="cuda:{0}".format(args.gpu))
-        if(multi):
-            saved_state_dict_2 = saved_state_dict_2["state_dict"]
-            keys_2 = saved_state_dict_2.keys()
-            keys_2 = list(keys_2)
-            for i in keys_2:
-                saved_state_dict_2[i[7:]] = saved_state_dict_2.pop(i)
+        if(ensemble):
+            saved_state_dict_2 = torch.load(args.restore_from_second, map_location="cuda:{0}".format(args.gpu))
+            if (multi):
+                saved_state_dict_2 = saved_state_dict_2["state_dict"]
+                keys_2 = saved_state_dict_2.keys()
+                keys_2 = list(keys_2)
+                for i in keys_2:
+                    saved_state_dict_2[i[7:]] = saved_state_dict_2.pop(i)
 
     model.load_state_dict(saved_state_dict)
     model2.load_state_dict(saved_state_dict_2)
-    
+
     model.eval()
     model.cuda(gpu0)
-    model2.eval()
-    model2.cuda(gpu0)
-    testloader = data.DataLoader(cityscapesDataSet(args.data_dir, args.data_list, crop_size=(1024, 512), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
-                                    batch_size=1, shuffle=False, pin_memory=True)
+    if(ensemble):
+        model2.eval()
+        model2.cuda(gpu0)
+    testloader = data.DataLoader(
+        cityscapesDataSet(args.data_dir, args.data_list, crop_size=(1024, 512), mean=IMG_MEAN, scale=False,
+                          mirror=False, set=args.set),
+        batch_size=1, shuffle=False, pin_memory=True)
 
     interp = nn.Upsample(size=(1024, 2048), mode='bilinear', align_corners=True)
 
@@ -129,85 +149,70 @@ def main():
             if index % 100 == 0:
                 print('%d processd' % index)
             image, _, _, name = batch
-            output1, output2 , _ = model(Variable(image).cuda(gpu0))
-            if(multi):
-                _, output2_2, _ = model2(Variable(image).cuda(gpu0))
-                output_f_2 = output2_2
-            else:
-                output1_2, output2_2, _ = model(Variable(image).cuda(gpu0))
-                output_f_2 = output1_2 + output2_2
+            output1, output2, _ = model(Variable(image).cuda(gpu0))
+            if(ensemble):
+                if (multi):
+                    _, output2_2, _ = model2(Variable(image).cuda(gpu0))
+                    output_f_2 = output2_2
+                else:
+                    output1_2, output2_2, _ = model(Variable(image).cuda(gpu0))
+                    output_f_2 = output1_2 + output2_2
             x = image
             output_f = output1 + output2
 
-            if(flipp):
-                pred_P = F.softmax(output1+output2, dim=1)
-
-                def flip(x, dim):
-                    dim = x.dim() + dim if dim < 0 else dim
-                    inds = tuple(slice(None, None) if i != dim
-                                 else x.new(torch.arange(x.size(i) - 1, -1, -1).tolist()).long()
-                                 for i in range(x.dim()))
-                    return x[inds]
-
+            if (flipp):
+                pred_P = F.softmax(output1 + output2, dim=1)
                 x_flip = flip(x, -1)
-                pred_flip_1,pred_flip, _ = model(x_flip.cuda(gpu0))
-                pred_P_flip = F.softmax(pred_flip+pred_flip_1, dim=1)
+                pred_flip_1, pred_flip, _ = model(x_flip.cuda(gpu0))
+                pred_P_flip = F.softmax(pred_flip + pred_flip_1, dim=1)
                 pred_P_2 = flip(pred_P_flip, -1)
                 pred_c = (pred_P + pred_P_2) / 2
                 output_f = pred_c.data.cpu().numpy()
 
-            if(flipp and multi):
-                pred_P = F.softmax(output2_2, dim=1)
+            if(ensemble):
+                if (flipp and multi):
+                    pred_P = F.softmax(output2_2, dim=1)
+                    x_flip = flip(x, -1)
+                    _, pred_flip, _ = model2(x_flip.cuda(gpu0))
+                    pred_P_flip = F.softmax(pred_flip, dim=1)
+                    pred_P_2 = flip(pred_P_flip, -1)
+                    pred_c = (pred_P + pred_P_2) / 2
+                    output_f_2 = pred_c.data.cpu().numpy()
 
-                def flip(x, dim):
-                    dim = x.dim() + dim if dim < 0 else dim
-                    inds = tuple(slice(None, None) if i != dim
-                                 else x.new(torch.arange(x.size(i) - 1, -1, -1).tolist()).long()
-                                 for i in range(x.dim()))
-                    return x[inds]
+                if (flipp and not multi):
+                    # no ensemble only restore-from model evaluated, with flipping output.
 
-                x_flip = flip(x, -1)
-                _, pred_flip, _ = model2(x_flip.cuda(gpu0))
-                pred_P_flip = F.softmax(pred_flip, dim=1)
-                pred_P_2 = flip(pred_P_flip, -1)
-                pred_c = (pred_P + pred_P_2) / 2
-                output_f_2 = pred_c.data.cpu().numpy()
+                    pred_P = F.softmax(output2_2 + output1_2, dim=1)
+                    x_flip = flip(x, -1)
+                    pred_flip_1, pred_flip, _ = model2(x_flip.cuda(gpu0))
+                    pred_P_flip = F.softmax(pred_flip + pred_flip_1, dim=1)
+                    pred_P_2 = flip(pred_P_flip, -1)
+                    pred_c = (pred_P + pred_P_2) / 2
+                    output_f_2 = pred_c.data.cpu().numpy()
 
-            if (flipp and not multi):
-                pred_P = F.softmax(output2_2 + output1_2, dim=1)
+            if (ensemble):
 
-                def flip(x, dim):
-                    dim = x.dim() + dim if dim < 0 else dim
-                    inds = tuple(slice(None, None) if i != dim
-                                 else x.new(torch.arange(x.size(i) - 1, -1, -1).tolist()).long()
-                                 for i in range(x.dim()))
-                    return x[inds]
+                # ensemble of restore-from and restore-from-second models.
 
-                x_flip = flip(x, -1)
-                pred_flip_1, pred_flip, _ = model2(x_flip.cuda(gpu0))
-                pred_P_flip = F.softmax(pred_flip + pred_flip_1, dim=1)
-                pred_P_2 = flip(pred_P_flip, -1)
-                pred_c = (pred_P + pred_P_2) / 2
-                output_f_2 = pred_c.data.cpu().numpy()
-
-            if(flipp):
-                output_final = torch.Tensor(output_f).cuda(gpu0)*0.7 + torch.Tensor(output_f_2).cuda(gpu0)*0.3
+                output_final = torch.Tensor(output_f).cuda(gpu0) * 0.7 + torch.Tensor(output_f_2).cuda(gpu0) * 0.3
             else:
+
+                # only restore-from output predicted for evalutaion no use of ensemble
+
                 output_final = output_f
 
             output = interp(output_final).cpu().data[0].numpy()
-            
-            output = output.transpose(1,2,0)
+
+            output = output.transpose(1, 2, 0)
             output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
-    
+
             output_col = colorize_mask(output)
             output = Image.fromarray(output)
-    
+
             name = name[0].split('/')[-1]
             output.save('%s/%s' % (args.save, name))
 
             output_col.save('%s/%s_color.png' % (args.save, name.split('.')[0]))
-
 
 
 if __name__ == '__main__':
