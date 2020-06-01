@@ -36,7 +36,11 @@ python train.py --gpu 6 --adv True --snapshot-dir ./GTA_snapshots/GTA2Cityscapes
 ```
 python evaluate.py --gpu=2 --ensemble True --restore-from-second "./model/GTA5_82000_orig_clan.pth" --restore-from ./snapshots/GTA2Cityscapes_only_norm/GTA5_100000.pth --multi False --flip True --save ./GTA_results/GTA2Cityscapes_ORIG_CLAN_and_NORM_flip_44_56
 ```
-#### Restore from second, multi and ensemble flags are for ensemble use only. if ensemble flag is set to False, only --restore-from model would be evaluated. multi is for ensembeling with models which uses different backbone layers during training s.e MaxSquareLoss model and AdaptSegNet. multi is referring only for ensemble mode, and multi model should be the second one (--restore-from-second). One can adjust the weight of each output in the ensemble via direct changes in code.
+#### Restore from second, multi and ensemble flags are for ensemble use only. if ensemble flag is set to False, only first (--restore-from model) would be evaluated. if ensemble flag set to False, multi and restore from second would be ignored. 
+
+#### multi reffers to models which uses different backbone layers during training s.e MaxSquareLoss model and AdaptSegNet. 
+
+#### if using multi model for ensembling, it should be the second one (--restore-from-second). One can adjust the weight of each output in the ensemble via direct changes in code.
 
 #### flip means using the output and it's flipped version for prediction (may improve results). 
 
