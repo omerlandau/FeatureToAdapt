@@ -20,6 +20,8 @@ from utils.loss import IW_MaxSquareloss
 from dataset.gta5_dataset import GTA5DataSet
 from dataset.cityscapes_dataset import cityscapesDataSet
 
+#for deterministic results
+
 torch.manual_seed(999)
 torch.cuda.manual_seed_all(999)
 torch.backends.cudnn.deterministic = True
