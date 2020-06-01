@@ -197,7 +197,7 @@ def main():
                 output_final = torch.Tensor(output_f).cuda(gpu0) * 0.7 + torch.Tensor(output_f_2).cuda(gpu0) * 0.3
             else:
 
-                # only restore-from output predicted for evalutaion no use of ensemble
+                # only restore-from output predicted for evaluation no use of ensemble
 
                 output_final = output_f
 
