@@ -4,6 +4,13 @@ This is a [pytorch](http://pytorch.org/) implementation of [Feature To Adapt](ht
 ### Numerical Achivements 
 
 <p align="left">
+	<img src="https://github.com/omerlandau/FeatureToAdapt/blob/master/numerical%20results.png"  alt="(a)"/>
+
+</p>
+
+
+### Visualization
+<p align="left">
 	<img src="https://github.com/omerlandau/FeatureToAdapt/blob/master/results_visualization.png"  alt="(a)"/>
 
 </p>
@@ -72,12 +79,6 @@ python iou.py ./data/Cityscapes/gtFine/val "$path_to_predictions"
 python evaluate_bulk.py
 python iou_bulk.py
 ```
-
-### Visualization of Results
-<p align="left">
-	<img src="https://github.com/omerlandau/FeatureToAdapt/blob/master/results_visualization.png"  alt="(a)"/>
-
-</p>
 
 
 #### This code is heavily borrowed from the baseline [AdaptSegNet]( https://github.com/wasidennis/AdaptSegNet ) and [CLAN]
