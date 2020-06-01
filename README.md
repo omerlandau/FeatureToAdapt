@@ -1,6 +1,21 @@
 # Boosting Adaptation on Pixel Level Segmantation using Larger Norm Feature Extraction
 This is a [pytorch](http://pytorch.org/) implementation of [Feature To Adapt](http://openaccess.thecvf.com/content_CVPR_2019/papers/Luo_Taking_a_Closer_Look_at_Domain_Shift_Category-Level_Adversaries_for_CVPR_2019_paper.pdf).
 
+### Numerical Achivements 
+
+<p align="left">
+	<img src="https://github.com/omerlandau/FeatureToAdapt/blob/master/numerical%20results.png"  alt="(a)"/>
+
+</p>
+
+
+### Visualization
+<p align="left">
+	<img src="https://github.com/omerlandau/FeatureToAdapt/blob/master/results_visualization.png"  alt="(a)"/>
+
+</p>
+
+
 ### Prerequisites
 - Python >=3.6
 - GPU Memory >= 11G
@@ -15,6 +30,8 @@ This is a [pytorch](http://pytorch.org/) implementation of [Feature To Adapt](ht
 - Download [The Cityscapes Dataset]( https://www.cityscapes-dataset.com/ )
 
 - Download [The imagenet pretraind model]( https://drive.google.com/open?id=13kjtX481LdtgJcpqD3oROabZyhGLSBm2 )
+
+- Our pretrained models are available via  [Google Drive](https://drive.google.com/drive/folders/1LdTSOw80Nd5fHsMiosP187QDo5LR6Rnf?usp=sharing )
 
 The data folder is structured as follows:
 ```
@@ -50,7 +67,7 @@ python evaluate.py --gpu=2 --ensemble True --restore-from-second "$second_model_
 
 - Flip means using the image and it's flipped version for prediction (may improve results). 
 
-pretrained models are available via [Google Drive]( https://drive.google.com/drive/folders/1LdTSOw80Nd5fHsMiosP187QDo5LR6Rnf?usp=sharing )
+reminder: pretrained models are available via [Google Drive]( https://drive.google.com/drive/folders/1LdTSOw80Nd5fHsMiosP187QDo5LR6Rnf?usp=sharing )
 
 ### Compute IoU
 ```
@@ -63,12 +80,6 @@ python evaluate_bulk.py
 python iou_bulk.py
 ```
 
-### Visualization Results
-<p align="left">
-	<img src="https://github.com/omerlandau/FeatureToAdapt/blob/master/results_visualization.png"  alt="(a)"/>
 
-</p>
-
-
-#### This code is heavily borrowed from the baseline [AdaptSegNet]( https://github.com/wasidennis/AdaptSegNet ) and [CLAN]
+#### This code is heavily borrowed from the baselines [AdaptSegNet]( https://github.com/wasidennis/AdaptSegNet) and [CLAN]( https://github.com/RoyalVane/CLAN). We also used in some parts pretrained model by [MaxSquareLoss](https://github.com/ZJULearning/MaxSquareLoss)
 
