@@ -81,5 +81,5 @@ python iou_bulk.py
 ```
 
 
-#### This code is heavily borrowed from the baseline [AdaptSegNet]( https://github.com/wasidennis/AdaptSegNet ) and [CLAN]
+#### This code is heavily borrowed from the baseline [AdaptSegNet and CLAN]( https://github.com/wasidennis/AdaptSegNet , https://github.com/RoyalVane/CLAN)
 
