@@ -38,7 +38,7 @@ python train.py --gpu 6 --adv True --snapshot-dir ./GTA_snapshots/GTA2Cityscapes
 
 ### Evaluate
 ```
-python evaluate.py --gpu=2 --ensemble True --restore-from-second "./model/GTA5_82000_orig_clan.pth" --restore-from ./snapshots/GTA2Cityscapes_only_norm/GTA5_100000.pth --multi False --flip True --save ./GTA_results/GTA2Cityscapes_ORIG_CLAN_and_NORM_flip_44_56
+python evaluate.py --gpu=2 --ensemble True --restore-from-second "$second_model_path" --restore-from "$first_model_path" --multi False --flip True --save "$path_for_generated_predictions"
 ```
 - Restore from second, multi and ensemble flags are for ensemble use only. If ensemble flag is set to False, only first (--restore-from) model would be evaluated and multi \ restore-from-second flags would be ignored. 
 
@@ -54,7 +54,7 @@ pretrained models are available via [Google Drive]( https://drive.google.com/dri
 
 ### Compute IoU
 ```
-python iou.py ./data/Cityscapes/gtFine/val result/GTA2Cityscapes_100000
+python iou.py ./data/Cityscapes/gtFine/val "$path_to_predictions"
 ```
 
 #### In order to Evaluate and compute iou of number of models you may use evaluate_bulk.py and iou_bulk.py, the results will be saved in a csv format. Complex evaluation s.e flipping and ensemble is not supported in evaluate_bulk mode.
