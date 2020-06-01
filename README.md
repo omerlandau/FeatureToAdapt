@@ -1,5 +1,5 @@
 # Boosting Adaptation on Pixel Level Segmantation using Larger Norm Feature Extraction
-This is a [pytorch](http://pytorch.org/) implementation of [CLAN](http://openaccess.thecvf.com/content_CVPR_2019/papers/Luo_Taking_a_Closer_Look_at_Domain_Shift_Category-Level_Adversaries_for_CVPR_2019_paper.pdf).
+This is a [pytorch](http://pytorch.org/) implementation of [Feature To Adapt](http://openaccess.thecvf.com/content_CVPR_2019/papers/Luo_Taking_a_Closer_Look_at_Domain_Shift_Category-Level_Adversaries_for_CVPR_2019_paper.pdf).
 
 ### Prerequisites
 - Python 3.6
@@ -29,36 +29,34 @@ The data folder is structured as follows:
 
 ### Train
 ```
+python train.py --gpu 6 --adv True --snapshot-dir ./GTA_snapshots/GTA2Cityscapes_adv 
 ```
 
 ### Evaluate
 ```
-
+python evaluate.py --gpu=2 --restore-from-second "./model/GTA5_82000_orig_clan.pth" --restore-from ./snapshots/GTA2Cityscapes_only_norm/GTA5_100000.pth --multi False --flip True --save ./GTA_results/GTA2Cityscapes_ORIG_CLAN_and_NORM_flip_44_56
 ```
-pretrained models are available via [Google Drive]( https://drive.google.com/open?id=1Hl7r6fIbNfyA9A8wGUJIMOwzXVQ61ik8 )
+#### Restore from second and multi flags are for ensemble use. flip means using the output and it's flipped version for prediction (may improve results).
+
+pretrained models are available via [Google Drive]( https://drive.google.com/drive/folders/1LdTSOw80Nd5fHsMiosP187QDo5LR6Rnf?usp=sharing )
 
 ### Compute IoU
 ```
 python iou.py ./data/Cityscapes/gtFine/val result/GTA2Cityscapes_100000
 ```
 
-#### Tip: The best-performance model might not be the final one in the last epoch. If you want to evaluate every saved models in bulk, please use CLAN_evaluate_bulk.py and CLAN_iou_bulk.py, the result will be saved in an Excel sheet.
+#### In order to Evaluate and compute iou of number of models you may use evaluate_bulk.py and iou_bulk.py, the results will be saved in a csv format.
 ```
-CUDA_VISIBLE_DEVICES=0 python python CLAN_evaluate_bulk.py
-python CLAN_iou_bulk.py
+python evaluate_bulk.py
+python iou_bulk.py
 ```
 
 ### Visualization Results
 <p align="left">
-	<img src="https://github.com/RoyalVane/CLAN/blob/master/gifs/video_1.gif"  width="420" height="210" alt="(a)"/>
+	<img src="https://github.com/omerlandau/FeatureToAdapt/blob/master/results_visualization.png"  alt="(a)"/>
 
-  <img src="https://github.com/RoyalVane/CLAN/blob/master/gifs/video_2.gif"  width="420" height="210" alt="(b)"/>
 </p>
-<p align="left">
-	<img src="https://github.com/RoyalVane/CLAN/blob/master/gifs/video_3.gif"  width="420" height="210" alt="(c)"/>
-  
-  <img src="https://github.com/RoyalVane/CLAN/blob/master/gifs/video_4.gif"  width="420" height="210" alt="(d)"/>
-</p>
+
 
 #### This code is heavily borrowed from the baseline [AdaptSegNet]( https://github.com/wasidennis/AdaptSegNet ) and [CLAN]
 

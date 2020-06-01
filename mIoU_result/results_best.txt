@@ -1,0 +1,162 @@
+
+Best CLAN + norm adapt
+
+===>road:	88.95
+===>sidewalk:	36.64
+===>building:	81.78
+===>wall:	30.46
+===>fence:	23.68
+===>pole:	32.98
+===>light:	35.12
+===>sign:	26.03
+===>vegetation:	83.52
+===>terrain:	30.76
+===>sky:	76.61
+===>person:	60.39
+===>rider:	25.5
+===>car:	82.44
+===>truck:	29.27
+===>bus:	45.8
+===>train:	0.32
+===>motocycle:	28.62
+===>bicycle:	32.52
+===> mIoU: 44.81
+
+Best CLAN + norm adapt + flip
+
+===>road:	88.83
+===>sidewalk:	33.17
+===>building:	81.48
+===>wall:	32.66
+===>fence:	24.24
+===>pole:	32.28
+===>light:	37.65
+===>sign:	27.53
+===>vegetation:	83.94
+===>terrain:	33.88
+===>sky:	75.42
+===>person:	60.99
+===>rider:	28.11
+===>car:	83.73
+===>truck:	33.36
+===>bus:	42.76
+===>train:	0.97
+===>motocycle:	31.13
+===>bicycle:	35.66
+===> mIoU: 45.67
+
+Only norm + deeplab v2:
+
+===>road:	86.41
+===>sidewalk:	26.55
+===>building:	79.14
+===>wall:	26.73
+===>fence:	21.73
+===>pole:	27.86
+===>light:	35.4
+===>sign:	25.65
+===>vegetation:	82.86
+===>terrain:	29.91
+===>sky:	74.34
+===>person:	59.93
+===>rider:	27.84
+===>car:	81.57
+===>truck:	32.72
+===>bus:	35.08
+===>train:	1.96
+===>motocycle:	31.79
+===>bicycle:	35.83
+===> mIoU: 43.33
+
+Only norm + deeplab v2 +flip:
+
+===>road:	86.59
+===>sidewalk:	26.65
+===>building:	79.63
+===>wall:	27.15
+===>fence:	22.61
+===>pole:	29.37
+===>light:	37.19
+===>sign:	27.39
+===>vegetation:	83.21
+===>terrain:	31.44
+===>sky:	73.7
+===>person:	60.36
+===>rider:	28.91
+===>car:	81.92
+===>truck:	33.41
+===>bus:	36.53
+===>train:	1.85
+===>motocycle:	32.23
+===>bicycle:	36.44
+===> mIoU: 44.03
+
+
+Easy Ensemble of both:
+
+===>road:	89.23
+===>sidewalk:	35.26
+===>building:	81.72
+===>wall:	32.13
+===>fence:	24.42
+===>pole:	32.38
+===>light:	36.19
+===>sign:	25.84
+===>vegetation:	83.87
+===>terrain:	33.28
+===>sky:	76.48
+===>person:	61.14
+===>rider:	27.39
+===>car:	83.66
+===>truck:	32.02
+===>bus:	44.61
+===>train:	0.63
+===>motocycle:	30.9
+===>bicycle:	34.43
+===> mIoU: 45.56
+
+Ensemble of MaxSquare + Norm:
+
+===>road:	89.57
+===>sidewalk:	40.32
+===>building:	82.06
+===>wall:	33.58
+===>fence:	23.35
+===>pole:	29.77
+===>light:	36.11
+===>sign:	23.68
+===>vegetation:	84.33
+===>terrain:	39.61
+===>sky:	74.89
+===>person:	60.31
+===>rider:	27.3
+===>car:	83.84
+===>truck:	42.8
+===>bus:	45.95
+===>train:	1.9
+===>motocycle:	32.16
+===>bicycle:	37.87
+===> mIoU: 46.81
+
+Ensemble of Orig Clan + NORM.
+
+===>road:	87.73
+===>sidewalk:	25.41
+===>building:	80.32
+===>wall:	28.65
+===>fence:	23.41
+===>pole:	29.47
+===>light:	37.49
+===>sign:	26.6
+===>vegetation:	83.93
+===>terrain:	35.38
+===>sky:	74.38
+===>person:	60.39
+===>rider:	28.9
+===>car:	83.48
+===>truck:	35.42
+===>bus:	39.36
+===>train:	1.1
+===>motocycle:	32.83
+===>bicycle:	36.27
+===> mIoU: 44.76
