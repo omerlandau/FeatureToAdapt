@@ -2,8 +2,11 @@
 This is a [pytorch](http://pytorch.org/) implementation of [Feature To Adapt](http://openaccess.thecvf.com/content_CVPR_2019/papers/Luo_Taking_a_Closer_Look_at_Domain_Shift_Category-Level_Adversaries_for_CVPR_2019_paper.pdf).
 
 ### Prerequisites
-- Python 3.6
+- Python >=3.6
 - GPU Memory >= 11G
+- Pytorch
+- Cuda 
+- PIL
 
 ### Getting started
 
@@ -31,6 +34,7 @@ The data folder is structured as follows:
 ```
 python train.py --gpu 6 --adv True --snapshot-dir ./GTA_snapshots/GTA2Cityscapes_adv 
 ```
+- If adv is set to be True, an adverserial model (based on CLAN) with additional L2 norm feature loss would be trained. If adv is set to be False, The version of deeplab_V2 + only L2 norm loss would be trained. 
 
 ### Evaluate
 ```
