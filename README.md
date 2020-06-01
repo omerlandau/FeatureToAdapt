@@ -5,7 +5,7 @@ This is a [pytorch](http://pytorch.org/) implementation of [Feature To Adapt](ht
 - Python >=3.6
 - GPU Memory >= 11G
 - Pytorch
-- Cuda 
+- CUDA
 - PIL
 
 ### Getting started
