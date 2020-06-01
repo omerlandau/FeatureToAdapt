@@ -74,7 +74,7 @@ reminder: pretrained models are available via [Google Drive]( https://drive.goog
 python iou.py ./data/Cityscapes/gtFine/val "$path_to_predictions"
 ```
 
-#### In order to Evaluate and compute iou of number of models you may use evaluate_bulk.py and iou_bulk.py, the results will be saved in a csv format. Complex evaluation s.e flipping and ensemble is not supported in evaluate_bulk mode.
+#### In order to Evaluate and compute iou of number of models you may use evaluate_bulk.py and iou_bulk.py, the results will be saved in a csv format. Complex evaluation f.e flipping and ensemble is not supported in evaluate_bulk mode.
 ```
 python evaluate_bulk.py
 python iou_bulk.py
